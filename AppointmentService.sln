@@ -1,0 +1,61 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.30907.101
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AppointmentService.API", "AppointmentService.API\AppointmentService.API.csproj", "{B7AED72D-1C83-4F7A-9979-57306C191924}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AppointmentService.Domain", "AppointmentService.Domain\AppointmentService.Domain.csproj", "{1B8498C4-A882-4742-8123-D8CD855D7366}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AppointmentService.Data", "AppointmentService.Data\AppointmentService.Data.csproj", "{B897A393-FB56-4CA1-83CD-E187800EAC14}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AppointmentService.Tests", "AppointmentService.Tests\AppointmentService.Tests.csproj", "{75CC4486-E85A-4B8D-B97E-892ACCF08EFC}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AppointmentService.Shared", "AppointmentService.Shared\AppointmentService.Shared.csproj", "{47C328CE-92C4-44DB-83D1-B0C4A0262EA5}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AppointmentService.IoC", "AppointmentService.IoC\AppointmentService.IoC.csproj", "{B2DD4547-1190-43C6-85A6-A576BD82B2AE}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AppointmentService.Application", "AppointmentService.Application\AppointmentService.Application.csproj", "{4F5D76EB-1F57-4B06-9D11-FE9BB00C1911}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{B7AED72D-1C83-4F7A-9979-57306C191924}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B7AED72D-1C83-4F7A-9979-57306C191924}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B7AED72D-1C83-4F7A-9979-57306C191924}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B7AED72D-1C83-4F7A-9979-57306C191924}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1B8498C4-A882-4742-8123-D8CD855D7366}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1B8498C4-A882-4742-8123-D8CD855D7366}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1B8498C4-A882-4742-8123-D8CD855D7366}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1B8498C4-A882-4742-8123-D8CD855D7366}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B897A393-FB56-4CA1-83CD-E187800EAC14}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B897A393-FB56-4CA1-83CD-E187800EAC14}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B897A393-FB56-4CA1-83CD-E187800EAC14}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B897A393-FB56-4CA1-83CD-E187800EAC14}.Release|Any CPU.Build.0 = Release|Any CPU
+		{75CC4486-E85A-4B8D-B97E-892ACCF08EFC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{75CC4486-E85A-4B8D-B97E-892ACCF08EFC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{75CC4486-E85A-4B8D-B97E-892ACCF08EFC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{75CC4486-E85A-4B8D-B97E-892ACCF08EFC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{47C328CE-92C4-44DB-83D1-B0C4A0262EA5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{47C328CE-92C4-44DB-83D1-B0C4A0262EA5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{47C328CE-92C4-44DB-83D1-B0C4A0262EA5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{47C328CE-92C4-44DB-83D1-B0C4A0262EA5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B2DD4547-1190-43C6-85A6-A576BD82B2AE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B2DD4547-1190-43C6-85A6-A576BD82B2AE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B2DD4547-1190-43C6-85A6-A576BD82B2AE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B2DD4547-1190-43C6-85A6-A576BD82B2AE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4F5D76EB-1F57-4B06-9D11-FE9BB00C1911}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4F5D76EB-1F57-4B06-9D11-FE9BB00C1911}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4F5D76EB-1F57-4B06-9D11-FE9BB00C1911}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4F5D76EB-1F57-4B06-9D11-FE9BB00C1911}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {5BA7D8FA-2A3D-4FDA-9AD0-651FE40F3AAF}
+	EndGlobalSection
+EndGlobal

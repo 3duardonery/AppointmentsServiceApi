@@ -1,0 +1,12 @@
+{
+  "version": 2,
+  "dgSpecHash": "GTkYC1iqim0Ut3zTvwV/xYJpeTjwUUnbOWLP/JQfPafMCn54uCKa0mmTITXqdGwI2KoM5KS8VngJX+SLetPCiA==",
+  "success": true,
+  "projectFilePath": "C:\\Projetos\\dotnet\\AppointmentService\\AppointmentService.Domain\\AppointmentService.Domain.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\eduardo_nery\\.nuget\\packages\\divino.operationresult\\3.0.0\\divino.operationresult.3.0.0.nupkg.sha512",
+    "C:\\Users\\eduardo_nery\\.nuget\\packages\\mongodb.bson\\2.15.0\\mongodb.bson.2.15.0.nupkg.sha512",
+    "C:\\Users\\eduardo_nery\\.nuget\\packages\\system.runtime.compilerservices.unsafe\\5.0.0\\system.runtime.compilerservices.unsafe.5.0.0.nupkg.sha512"
+  ],
+  "logs": []
+}

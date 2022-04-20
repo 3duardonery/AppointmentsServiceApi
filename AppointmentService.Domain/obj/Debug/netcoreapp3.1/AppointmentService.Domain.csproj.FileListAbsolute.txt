@@ -1,0 +1,12 @@
+C:\Projetos\dotnet\AppointmentService\AppointmentService.Domain\bin\Debug\netcoreapp3.1\AppointmentService.Domain.deps.json
+C:\Projetos\dotnet\AppointmentService\AppointmentService.Domain\bin\Debug\netcoreapp3.1\AppointmentService.Domain.dll
+C:\Projetos\dotnet\AppointmentService\AppointmentService.Domain\bin\Debug\netcoreapp3.1\AppointmentService.Domain.pdb
+C:\Projetos\dotnet\AppointmentService\AppointmentService.Domain\bin\Debug\netcoreapp3.1\AppointmentService.Shared.dll
+C:\Projetos\dotnet\AppointmentService\AppointmentService.Domain\bin\Debug\netcoreapp3.1\AppointmentService.Shared.pdb
+C:\Projetos\dotnet\AppointmentService\AppointmentService.Domain\obj\Debug\netcoreapp3.1\AppointmentService.Domain.csprojAssemblyReference.cache
+C:\Projetos\dotnet\AppointmentService\AppointmentService.Domain\obj\Debug\netcoreapp3.1\AppointmentService.Domain.AssemblyInfoInputs.cache
+C:\Projetos\dotnet\AppointmentService\AppointmentService.Domain\obj\Debug\netcoreapp3.1\AppointmentService.Domain.AssemblyInfo.cs
+C:\Projetos\dotnet\AppointmentService\AppointmentService.Domain\obj\Debug\netcoreapp3.1\AppointmentService.Domain.csproj.CoreCompileInputs.cache
+C:\Projetos\dotnet\AppointmentService\AppointmentService.Domain\obj\Debug\netcoreapp3.1\AppointmentService.Domain.csproj.CopyComplete
+C:\Projetos\dotnet\AppointmentService\AppointmentService.Domain\obj\Debug\netcoreapp3.1\AppointmentService.Domain.dll
+C:\Projetos\dotnet\AppointmentService\AppointmentService.Domain\obj\Debug\netcoreapp3.1\AppointmentService.Domain.pdb
