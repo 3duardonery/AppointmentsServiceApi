@@ -1,9 +1,0 @@
-C:\Projetos\dotnet\AppointmentService\AppointmentService.Shared\bin\Debug\netcoreapp3.1\AppointmentService.Shared.deps.json
-C:\Projetos\dotnet\AppointmentService\AppointmentService.Shared\bin\Debug\netcoreapp3.1\AppointmentService.Shared.dll
-C:\Projetos\dotnet\AppointmentService\AppointmentService.Shared\bin\Debug\netcoreapp3.1\AppointmentService.Shared.pdb
-C:\Projetos\dotnet\AppointmentService\AppointmentService.Shared\obj\Debug\netcoreapp3.1\AppointmentService.Shared.csprojAssemblyReference.cache
-C:\Projetos\dotnet\AppointmentService\AppointmentService.Shared\obj\Debug\netcoreapp3.1\AppointmentService.Shared.AssemblyInfoInputs.cache
-C:\Projetos\dotnet\AppointmentService\AppointmentService.Shared\obj\Debug\netcoreapp3.1\AppointmentService.Shared.AssemblyInfo.cs
-C:\Projetos\dotnet\AppointmentService\AppointmentService.Shared\obj\Debug\netcoreapp3.1\AppointmentService.Shared.csproj.CoreCompileInputs.cache
-C:\Projetos\dotnet\AppointmentService\AppointmentService.Shared\obj\Debug\netcoreapp3.1\AppointmentService.Shared.dll
-C:\Projetos\dotnet\AppointmentService\AppointmentService.Shared\obj\Debug\netcoreapp3.1\AppointmentService.Shared.pdb
