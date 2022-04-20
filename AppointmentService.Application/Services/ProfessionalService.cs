@@ -10,12 +10,12 @@ using System.Threading.Tasks;
 
 namespace AppointmentService.Application.Services
 {
-    public sealed class FactoryProfessionalService : FactoryProfessionalServiceImp
+    public sealed class ProfessionalService : ProfessionalServiceImp
     {
         private readonly FactoryProfessionalImp _factoryProfessionalService;
         private readonly IMapper _mapper;
 
-        public FactoryProfessionalService(FactoryProfessionalImp factoryProfessionalService, IMapper mapper)
+        public ProfessionalService(FactoryProfessionalImp factoryProfessionalService, IMapper mapper)
         {
             _factoryProfessionalService = factoryProfessionalService;
             _mapper = mapper;
@@ -30,7 +30,7 @@ namespace AppointmentService.Application.Services
             if (!isSuccess)
                 return Result.Error<ProfessionalViewModel>(exception);
 
-            return Result.Success(_mapper.Map<ProfessionalViewModel>(professional));
+            return Result.Success(_mapper.Map<ProfessionalViewModel>(result));
         }
 
         public async Task<Result<IEnumerable<ProfessionalViewModel>>> GetAllProfessionals()

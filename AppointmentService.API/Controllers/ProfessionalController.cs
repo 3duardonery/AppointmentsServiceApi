@@ -9,9 +9,9 @@ namespace AppointmentService.API.Controllers
     [ApiController]
     public class ProfessionalController : ControllerBase
     {
-        private readonly FactoryProfessionalServiceImp _professionalService;
+        private readonly ProfessionalServiceImp _professionalService;
 
-        public ProfessionalController(FactoryProfessionalServiceImp professionalService) 
+        public ProfessionalController(ProfessionalServiceImp professionalService) 
             => _professionalService = professionalService;
 
         [HttpGet]

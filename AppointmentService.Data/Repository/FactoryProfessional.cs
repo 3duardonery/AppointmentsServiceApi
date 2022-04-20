@@ -16,7 +16,7 @@ namespace AppointmentService.Data.Repository
         private readonly IMongoCollection<Professional> _professionals;
 
         public FactoryProfessional(MongoContext mongoContext) 
-            => _professionals = mongoContext.GetCollection<Professional>("profesionals");
+            => _professionals = mongoContext.GetCollection<Professional>("professionals");
 
         public Task<Result<bool>> Disable(string professionalId)
         {
