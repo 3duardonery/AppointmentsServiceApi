@@ -17,7 +17,9 @@ namespace AppointmentService.API.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAllProfessionals()
         {
-            var results = await _professionalService.GetAllProfessionals().ConfigureAwait(false); 
+            var results = await _professionalService
+                .GetAllProfessionals().ConfigureAwait(false);
+
             return Ok(results.Value);
         }
 
@@ -31,6 +33,19 @@ namespace AppointmentService.API.Controllers
                 return BadRequest();
 
             return Created("", result.Value);
+        }
+
+        [HttpPatch]
+        public async Task<IActionResult> AddServiceDependency([FromBody] SetServicesRequestDto request)
+        {
+            var result = await _professionalService
+                .SetServices(request.ProfessionalId, request.ServiceIds)
+                .ConfigureAwait(false);
+
+            if (!result.IsSuccess)
+                return BadRequest();
+
+            return Ok();
         }
     }
 }

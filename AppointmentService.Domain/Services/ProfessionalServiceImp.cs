@@ -10,5 +10,6 @@ namespace AppointmentService.Domain.Services
     {
         Task<Result<IEnumerable<ProfessionalViewModel>>> GetAllProfessionals();
         Task<Result<ProfessionalViewModel>> CreateNewProfessional(ProfessionalDto professional);
+        Task<Result> SetServices(string professionalId, List<string> servicesIds);
     }
 }

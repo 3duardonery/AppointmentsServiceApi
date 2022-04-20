@@ -11,5 +11,6 @@ namespace AppointmentService.Domain.Repository
         Task<Result<Professional>> Save(Professional professional);
         Task<Result<Professional>> Enable(string professionalId);
         Task<Result<bool>> Disable(string professionalId);
+        Task<Result> SetServices(string professionalId, IEnumerable<Service> services);
     }
 }

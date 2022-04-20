@@ -12,12 +12,14 @@ namespace AppointmentService.Application.Services
 {
     public sealed class ProfessionalService : ProfessionalServiceImp
     {
-        private readonly FactoryProfessionalImp _factoryProfessionalService;
+        private readonly FactoryProfessionalImp _factoryProfessional;
+        private readonly FactoryProfessionalServicesImp _factoryProfessionalServices;
         private readonly IMapper _mapper;
 
-        public ProfessionalService(FactoryProfessionalImp factoryProfessionalService, IMapper mapper)
+        public ProfessionalService(FactoryProfessionalImp factoryProfessionalService, FactoryProfessionalServicesImp factoryProfessionalServices, IMapper mapper)
         {
-            _factoryProfessionalService = factoryProfessionalService;
+            _factoryProfessional = factoryProfessionalService;
+            _factoryProfessionalServices = factoryProfessionalServices;
             _mapper = mapper;
         }
 
@@ -25,7 +27,7 @@ namespace AppointmentService.Application.Services
         {
             var professional = _mapper.Map<Professional>(professionalDto);
 
-            var (isSuccess, result, exception) = await _factoryProfessionalService.Save(professional).ConfigureAwait(false);
+            var (isSuccess, result, exception) = await _factoryProfessional.Save(professional).ConfigureAwait(false);
 
             if (!isSuccess)
                 return Result.Error<ProfessionalViewModel>(exception);
@@ -35,9 +37,27 @@ namespace AppointmentService.Application.Services
 
         public async Task<Result<IEnumerable<ProfessionalViewModel>>> GetAllProfessionals()
         {
-            var professionals = await _factoryProfessionalService.Professionals().ConfigureAwait(false);
+            var professionals = await _factoryProfessional.Professionals().ConfigureAwait(false);
 
             return Result.Success(_mapper.Map<IEnumerable<ProfessionalViewModel>>(professionals.Value));
+        }
+
+        public async Task<Result> SetServices(string professionalId, List<string> servicesIds)
+        {
+            var (isSuccess, resultsFound, excpetion) = await _factoryProfessionalServices
+                .GetServicesByIds(servicesIds)
+                .ConfigureAwait(false);
+
+            if (!isSuccess)
+                return excpetion;
+
+            var setServiceOperationResult = 
+                await _factoryProfessional.SetServices(professionalId, resultsFound);
+
+            if (!setServiceOperationResult.IsSuccess)
+                return setServiceOperationResult.Exception;
+
+            return setServiceOperationResult;
         }
     }
 }

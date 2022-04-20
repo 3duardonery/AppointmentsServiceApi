@@ -21,7 +21,7 @@ namespace AppointmentService.Domain.Models
         public bool IsEnabled { get; set; }
 
         [BsonElement("services")]
-        public IEnumerable<ProfessionalService> Services { get; set; }
+        public IEnumerable<Service> Services { get; set; }
 
     }
 }

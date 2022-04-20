@@ -34,7 +34,7 @@ namespace AppointmentService.Data.Repository
         {
             try
             {
-                var filter = Builders<Service>.Filter.In("_id", ids);
+                var filter = Builders<Service>.Filter.In(x => x.Id, ids);
                 var services = await _services.FindAsync(filter: filter).ConfigureAwait(false);
 
                 return services.ToList();

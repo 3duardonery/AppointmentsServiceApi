@@ -1,6 +1,7 @@
 ﻿using AppointmentService.Data.DataContext;
 using AppointmentService.Domain.Models;
 using AppointmentService.Domain.Repository;
+using MongoDB.Bson;
 using MongoDB.Driver;
 using OperationResult;
 using System;
@@ -15,7 +16,7 @@ namespace AppointmentService.Data.Repository
 
         private readonly IMongoCollection<Professional> _professionals;
 
-        public FactoryProfessional(MongoContext mongoContext) 
+        public FactoryProfessional(MongoContext mongoContext)
             => _professionals = mongoContext.GetCollection<Professional>("professionals");
 
         public Task<Result<bool>> Disable(string professionalId)
@@ -54,6 +55,25 @@ namespace AppointmentService.Data.Repository
             {
                 return Result.Error<Professional>(ex);
             }
+        }
+
+        public async Task<Result> SetServices(string professionalId, IEnumerable<Service> services)
+        {
+            try
+            {
+                var filter = Builders<Professional>.Filter.Eq("_id", ObjectId.Parse(professionalId));
+
+                var professional = await _professionals.UpdateOneAsync(filter,
+                    Builders<Professional>.Update.Set(rec => rec.Services, services));
+
+                return Result.Success();
+            }
+            catch (Exception ex)
+            {
+                return ex;
+            }
+
+
         }
     }
 }
