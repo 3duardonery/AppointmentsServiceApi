@@ -45,9 +45,17 @@ namespace AppointmentService.Data.Repository
             }
         }
 
-        public Task<Result<Service>> Save(Service service)
+        public async Task<Result<Service>> Save(Service service)
         {
-            throw new System.NotImplementedException();
+            try
+            {
+                await _services.InsertOneAsync(service).ConfigureAwait(false);
+                return service;
+            }
+            catch (Exception ex)
+            {
+                return ex;
+            }
         }
     }
 }
