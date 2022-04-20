@@ -10,8 +10,11 @@ namespace AppointmentService.IoC.Services
     {
         public static void AddServicesInjection(this IServiceCollection services)
         {
-            services.AddScoped<FactoryProfessionalServiceImp, FactoryProfessionalService>();
+            services.AddScoped<ProfessionalServiceImp, ProfessionalService>();
             services.AddScoped<FactoryProfessionalImp, FactoryProfessional>();
+
+            services.AddScoped<FactoryProfessionalServicesImp, FactoryProfessionalServices>();
+            services.AddScoped<ProfessionalServicesServiceImp, ProfessionalServicesService>();
         }
     }
 }

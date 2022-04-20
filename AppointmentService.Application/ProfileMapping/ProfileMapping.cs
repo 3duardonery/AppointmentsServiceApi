@@ -11,6 +11,8 @@ namespace AppointmentService.Application.ProfileMapping
         {
             CreateMap<Professional, ProfessionalViewModel>().ReverseMap();
             CreateMap<Professional, ProfessionalDto>().ReverseMap();
+            CreateMap<Service, ProfessionalServiceViewModel>().ReverseMap();
+            CreateMap<Service, ProfessionalServiceDto>().ReverseMap();
         }
     }
 }

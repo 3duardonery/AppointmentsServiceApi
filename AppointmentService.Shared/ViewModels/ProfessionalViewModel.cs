@@ -1,4 +1,6 @@
-﻿namespace AppointmentService.Shared.ViewModels
+﻿using System.Collections.Generic;
+
+namespace AppointmentService.Shared.ViewModels
 {
     public sealed class ProfessionalViewModel
     {
@@ -9,5 +11,6 @@
         public string ProfilePicture { get; set; }
 
         public bool IsEnabled { get; set; }
+        public IEnumerable<ProfessionalServiceViewModel> Services { get; set; }
     }
 }

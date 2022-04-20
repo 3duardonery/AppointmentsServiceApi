@@ -6,9 +6,10 @@ using System.Threading.Tasks;
 
 namespace AppointmentService.Domain.Services
 {
-    public interface FactoryProfessionalServiceImp
+    public interface ProfessionalServiceImp
     {
         Task<Result<IEnumerable<ProfessionalViewModel>>> GetAllProfessionals();
         Task<Result<ProfessionalViewModel>> CreateNewProfessional(ProfessionalDto professional);
+        Task<Result> SetServices(string professionalId, List<string> servicesIds);
     }
 }
