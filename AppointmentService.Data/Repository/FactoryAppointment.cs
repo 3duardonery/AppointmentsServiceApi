@@ -21,7 +21,7 @@ namespace AppointmentService.Data.Repository
         {
             try
             {
-                var filter = Builders<Appointment>.Filter.Eq("customerId", ObjectId.Parse(customerId));
+                var filter = Builders<Appointment>.Filter.Eq("customerId", customerId);
 
                 var appointments = await _appointments.FindAsync(filter).ConfigureAwait(false);
 
@@ -37,7 +37,7 @@ namespace AppointmentService.Data.Repository
         {
             try
             {
-                var filter = Builders<Appointment>.Filter.Eq("professionalId", ObjectId.Parse(professionalId));
+                var filter = Builders<Appointment>.Filter.Eq("professionalReference._id", ObjectId.Parse(professionalId));
 
                 var appointments = await _appointments.FindAsync(filter).ConfigureAwait(false);
 

@@ -27,5 +27,27 @@ namespace AppointmentService.API.Controllers
 
             return Created("", result);
         }
+
+        [HttpGet("customer")]
+        public async Task<IActionResult> GetCustomerAppointments([FromQuery] string customerId)
+        {
+            var (isSucces, appointments, exception) = await _appointmentService.GetAppointmentsByCustomerId(customerId).ConfigureAwait(false);
+
+            if (!isSucces)
+                return BadRequest(exception.Message);
+
+            return Ok(appointments);
+        }
+
+        [HttpGet("professional")]
+        public async Task<IActionResult> GetProfessionalAppointments([FromQuery] string professionalId)
+        {
+            var (isSucces, appointments, exception) = await _appointmentService.GetAppointmentsByProfessionalId(professionalId).ConfigureAwait(false);
+
+            if (!isSucces)
+                return BadRequest(exception.Message);
+
+            return Ok(appointments);
+        }
     }
 }
