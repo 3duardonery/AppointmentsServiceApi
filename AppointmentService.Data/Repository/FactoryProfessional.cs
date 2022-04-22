@@ -29,6 +29,22 @@ namespace AppointmentService.Data.Repository
             throw new NotImplementedException();
         }
 
+        public async Task<Result<Professional>> GetProfessionalById(string professionalId)
+        {
+            try
+            {
+                var filter = Builders<Professional>.Filter.Eq("_id", ObjectId.Parse(professionalId));
+
+                var professional = await _professionals.FindAsync(filter).ConfigureAwait(false);
+
+                return professional.FirstOrDefault();
+            }
+            catch (Exception ex)
+            {
+                return ex;
+            }
+        }
+
         public async Task<Result<IEnumerable<Professional>>> Professionals()
         {
             try
@@ -72,8 +88,6 @@ namespace AppointmentService.Data.Repository
             {
                 return ex;
             }
-
-
         }
     }
 }

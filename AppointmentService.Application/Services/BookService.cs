@@ -16,12 +16,17 @@ namespace AppointmentService.Application.Services
     {
         private readonly FactoryBookImp _factoryBook;
         private readonly FactoryProfessionalServicesImp _factoryProfessionalServices;
+        private readonly FactoryProfessionalImp _factoryProfessional;
         private readonly IMapper _mapper;
 
-        public BookService(FactoryBookImp factoryBook, FactoryProfessionalServicesImp factoryProfessionalServices, IMapper mapper)
+        public BookService(
+        FactoryBookImp factoryBook, 
+        FactoryProfessionalServicesImp factoryProfessionalServices,
+        FactoryProfessionalImp factoryProfessional, IMapper mapper)
         {
             _factoryBook = factoryBook;
             _factoryProfessionalServices = factoryProfessionalServices;
+            _factoryProfessional = factoryProfessional;
             _mapper = mapper;
         }
 
@@ -42,21 +47,30 @@ namespace AppointmentService.Application.Services
 
             var differenceInDates = (openBookRequest.EndDate - openBookRequest.StartDate).TotalDays;
 
+            var professionalReference = await _factoryProfessional
+                .GetProfessionalById(openBookRequest.ProfessionalId)
+                .ConfigureAwait(false);
+
+            if (!professionalReference.IsSuccess)
+                return professionalReference.Exception;
+
             var serviceDuration = await _factoryProfessionalServices
                 .GetServiceById(openBookRequest.ServiceId).ConfigureAwait(false);
 
             if (!serviceDuration.IsSuccess)
                 return serviceDuration.Exception;
 
-
             for (int start = 0; start <= differenceInDates; start++)
             {
-                var book = new Book();
+                var book = new Book
+                {
+                    Date = openBookRequest.StartDate,
+                    IsEnabled = true,
+                    ProfessionalReference = professionalReference.Value,
+                    ServiceReference = serviceDuration.Value,
+                    AvailableHours = GetAvailableHours(openBookRequest.StartDate, openBookRequest.StartTime, openBookRequest.EndTime, serviceDuration.Value.Duration)
+                };
 
-                book.Date = openBookRequest.StartDate;
-                book.IsEnabled = true;
-                book.ServiceReference = serviceDuration.Value;
-                book.AvailableHours = GetAvailableHours(openBookRequest.StartDate, openBookRequest.StartTime, openBookRequest.EndTime, serviceDuration.Value.Duration);
                 avilableBook.Add(book);
 
                 openBookRequest.StartDate = openBookRequest.StartDate.AddDays(1);

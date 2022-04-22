@@ -35,7 +35,7 @@ namespace AppointmentService.Data.Repository
         {
             try
             {
-                var filter = Builders<Book>.Filter.Eq("serviceReference.id", ObjectId.Parse(serviceId));
+                var filter = Builders<Book>.Filter.Eq("serviceReference._id", ObjectId.Parse(serviceId));
 
                 var books = await _books.FindAsync(filter).ConfigureAwait(false);
 

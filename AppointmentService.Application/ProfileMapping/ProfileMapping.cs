@@ -10,8 +10,10 @@ namespace AppointmentService.Application.ProfileMapping
         public ProfileMapping()
         {
             CreateMap<Professional, ProfessionalViewModel>().ReverseMap();
+            CreateMap<Professional, ProfessionalBookViewModel>().ReverseMap();
             CreateMap<Professional, ProfessionalDto>().ReverseMap();
             CreateMap<Service, ServiceViewModel>().ReverseMap();
+            CreateMap<Service, ServiceBookViewModel>().ReverseMap();
             CreateMap<Service, ProfessionalServiceDto>().ReverseMap();
             CreateMap<Time, TimeViewModel>().ReverseMap();
             CreateMap<Book, BookViewModel>().ForPath(d => d.BookDateStringValue, 

@@ -14,7 +14,7 @@ namespace AppointmentService.API.Controllers
         public BooksController(BookServiceImp bookService) 
             => _bookService = bookService;
 
-        [HttpGet("{serviceId}")]
+        [HttpGet]
         public async Task<IActionResult> GetBookByServiceId([FromQuery] string serviceId)
         {
             var (isSuccess, result, exception) = await _bookService

@@ -19,6 +19,9 @@ namespace AppointmentService.Domain.Models
         [BsonElement("serviceReference")]
         public Service ServiceReference { get; set; }
 
+        [BsonElement("professionalReference")]
+        public Professional ProfessionalReference { get; set; }
+
         [BsonElement("isEnabled")]
         public bool IsEnabled { get; set; }
     }
