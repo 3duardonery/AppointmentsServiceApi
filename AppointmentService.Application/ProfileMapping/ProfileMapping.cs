@@ -11,8 +11,11 @@ namespace AppointmentService.Application.ProfileMapping
         {
             CreateMap<Professional, ProfessionalViewModel>().ReverseMap();
             CreateMap<Professional, ProfessionalDto>().ReverseMap();
-            CreateMap<Service, ProfessionalServiceViewModel>().ReverseMap();
+            CreateMap<Service, ServiceViewModel>().ReverseMap();
             CreateMap<Service, ProfessionalServiceDto>().ReverseMap();
+            CreateMap<Time, TimeViewModel>().ReverseMap();
+            CreateMap<Book, BookViewModel>().ForPath(d => d.BookDateStringValue, 
+                opt => opt.MapFrom(b => b.Date.ToString("dd/MM/yyyy"))).ReverseMap();
         }
     }
 }

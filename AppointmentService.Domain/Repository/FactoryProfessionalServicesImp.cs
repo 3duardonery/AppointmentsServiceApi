@@ -10,5 +10,6 @@ namespace AppointmentService.Domain.Repository
         Task<Result<Service>> Save(Service service);        
         Task<Result<IEnumerable<Service>>> Services();
         Task<Result<IEnumerable<Service>>> GetServicesByIds(List<string> ids);
+        Task<Result<Service>> GetServiceById(string id);
     }
 }
