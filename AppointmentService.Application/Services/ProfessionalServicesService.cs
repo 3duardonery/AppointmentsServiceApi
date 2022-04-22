@@ -22,7 +22,7 @@ namespace AppointmentService.Application.Services
             _mapper = mapper;
         }
 
-        public async Task<Result<ProfessionalServiceViewModel>> CreateNewService(ProfessionalServiceDto serviceDto)
+        public async Task<Result<ServiceViewModel>> CreateNewService(ProfessionalServiceDto serviceDto)
         {
             var service = _mapper.Map<Service>(serviceDto);
 
@@ -32,10 +32,10 @@ namespace AppointmentService.Application.Services
             if (!isSuccess)
                 return exception;
 
-            return _mapper.Map<ProfessionalServiceViewModel>(result);
+            return _mapper.Map<ServiceViewModel>(result);
         }
 
-        public async Task<Result<IEnumerable<ProfessionalServiceViewModel>>> GetAllServices()
+        public async Task<Result<IEnumerable<ServiceViewModel>>> GetAllServices()
         {
             var (isSuccess, results, exception) = await _professionalServices.Services()
                 .ConfigureAwait(false);
@@ -44,7 +44,7 @@ namespace AppointmentService.Application.Services
                 return exception;
 
 
-            return Result.Success(_mapper.Map<IEnumerable<ProfessionalServiceViewModel>>(results));
+            return Result.Success(_mapper.Map<IEnumerable<ServiceViewModel>>(results));
         }
     }
 }

@@ -11,6 +11,6 @@ namespace AppointmentService.Shared.ViewModels
         public string ProfilePicture { get; set; }
 
         public bool IsEnabled { get; set; }
-        public IEnumerable<ProfessionalServiceViewModel> Services { get; set; }
+        public IEnumerable<ServiceViewModel> Services { get; set; }
     }
 }

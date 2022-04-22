@@ -1,25 +1,23 @@
 ﻿using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
-using MongoDB.Bson.Serialization.IdGenerators;
+using System;
 using System.Collections.Generic;
 
 namespace AppointmentService.Domain.Models
 {
     public sealed class Book
     {
-        [BsonId(IdGenerator = typeof(StringObjectIdGenerator))]
-        [BsonRepresentation(BsonType.ObjectId)]
+        public Book() => Id = Guid.NewGuid().ToString();
         public string Id { get; set; }
 
         [BsonElement("date")]
-        public string Date { get; set; }
+        public DateTime Date { get; set; }
 
         [BsonElement("availableTimes")]
-        public IEnumerable<Time> AvailableTimes { get; set; }
+        public IEnumerable<Time> AvailableHours { get; set; }
 
-        [BsonElement("serviceId")]
-        public string ServiceId { get; set; }
-
+        [BsonElement("serviceReference")]
+        public Service ServiceReference { get; set; }
 
         [BsonElement("isEnabled")]
         public bool IsEnabled { get; set; }

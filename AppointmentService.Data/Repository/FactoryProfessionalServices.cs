@@ -57,5 +57,20 @@ namespace AppointmentService.Data.Repository
                 return ex;
             }
         }
+
+        public async Task<Result<Service>> GetServiceById(string id)
+        {
+            try
+            {
+                var filter = Builders<Service>.Filter.Eq(x => x.Id, id);
+                var services = await _services.FindAsync(filter: filter).ConfigureAwait(false);
+
+                return services.FirstOrDefault();
+            }
+            catch (Exception ex)
+            {
+                return ex;
+            }
+        }
     }
 }

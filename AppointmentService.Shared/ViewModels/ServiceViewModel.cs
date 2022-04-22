@@ -1,6 +1,6 @@
 ﻿namespace AppointmentService.Shared.ViewModels
 {
-    public sealed class ProfessionalServiceViewModel
+    public sealed class ServiceViewModel
     {
         public string Id { get; set; }
         public string Description { get; set; }
