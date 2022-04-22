@@ -18,6 +18,9 @@ namespace AppointmentService.IoC.Services
 
             services.AddScoped<FactoryBookImp, FactoryBook>();
             services.AddScoped<BookServiceImp, BookService>();
+
+            services.AddScoped<FactoryAppointmentImp, FactoryAppointment>();
+            services.AddScoped<AppointmentBookServiceImp, AppointmentBookService>();
         }
     }
 }
