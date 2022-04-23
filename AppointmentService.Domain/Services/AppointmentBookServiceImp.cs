@@ -11,5 +11,6 @@ namespace AppointmentService.Domain.Services
         Task<Result<AppointmentViewModel>> Save(AppointmentRequestDto appointment);
         Task<Result<IEnumerable<AppointmentViewModel>>> GetAppointmentsByCustomerId(string customerId);
         Task<Result<IEnumerable<AppointmentViewModel>>> GetAppointmentsByProfessionalId(string professionalId);
+        Task<Result> CancelAppointment(string appointmentId);
     }
 }

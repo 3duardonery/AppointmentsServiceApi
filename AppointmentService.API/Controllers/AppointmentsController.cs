@@ -49,5 +49,16 @@ namespace AppointmentService.API.Controllers
 
             return Ok(appointments);
         }
+
+        [HttpPatch("cancel")]
+        public async Task<IActionResult> CancelAppointment([FromQuery] string appointmentId)
+        {
+            var resultOfAppointmentCancellation = await _appointmentService.CancelAppointment(appointmentId).ConfigureAwait(false);
+
+            if (!resultOfAppointmentCancellation.IsSuccess)
+                return BadRequest(resultOfAppointmentCancellation.Exception);
+
+            return Ok();
+        }
     }
 }

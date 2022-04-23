@@ -13,6 +13,12 @@ namespace AppointmentService.Domain.Models
         [BsonRepresentation(BsonType.ObjectId)]
         public string Id { get; set; }
 
+        [BsonElement("bookId")]
+        public string BookId { get; set; }
+
+        [BsonElement("slotId")]
+        public string SlotId { get; set; }
+
         [BsonElement("createdAt")]
         public DateTime CreatedAt { get; private set; }
 

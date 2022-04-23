@@ -84,5 +84,21 @@ namespace AppointmentService.Data.Repository
                 return ex;
             }
         }
+
+        public async Task<Result<Book>> GetBookById(string bookId)
+        {
+            try
+            {
+                var filter = Builders<Book>.Filter.Eq("_id", bookId);
+
+                var books = await _books.FindAsync(filter).ConfigureAwait(false);
+
+                return Result.Success(books.FirstOrDefault());
+            }
+            catch (Exception ex)
+            {
+                return ex;
+            }
+        }
     }
 }

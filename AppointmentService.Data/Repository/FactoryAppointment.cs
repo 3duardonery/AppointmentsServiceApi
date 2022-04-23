@@ -17,6 +17,39 @@ namespace AppointmentService.Data.Repository
         public FactoryAppointment(MongoContext mongoContext)
             => _appointments = mongoContext.GetCollection<Appointment>("appointments");
 
+        public async Task<Result> Cancel(string appointmentId)
+        {
+            try
+            {
+                var filter = Builders<Appointment>.Filter.Eq("_id", ObjectId.Parse(appointmentId));
+
+                var professional = await _appointments.UpdateOneAsync(filter,
+                    Builders<Appointment>.Update.Set(rec => rec.IsCancelled, true));
+
+                return Result.Success();
+            }
+            catch (Exception ex)
+            {
+                return ex;
+            }
+        }
+
+        public async Task<Result<Appointment>> GetAppointmentbyId(string appointmentId)
+        {
+            try
+            {
+                var filter = Builders<Appointment>.Filter.Eq("_id", ObjectId.Parse(appointmentId));
+
+                var appointments = await _appointments.FindAsync(filter).ConfigureAwait(false);
+
+                return Result.Success(appointments.FirstOrDefault());
+            }
+            catch (Exception ex)
+            {
+                return ex;
+            }
+        }
+
         public async Task<Result<IEnumerable<Appointment>>> GetAppointmentsByCustomerId(string customerId)
         {
             try

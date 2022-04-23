@@ -30,6 +30,55 @@ namespace AppointmentService.Application.Services
             _mapper = mapper;
         }
 
+        public async Task<Result> CancelAppointment(string appointmentId)
+        {
+            var appointment = await _factoryAppointment
+                .GetAppointmentbyId(appointmentId).ConfigureAwait(false);
+
+            if (!appointment.IsSuccess)
+                return appointment.Exception;
+
+            var book = await _factoryBook.GetBookById(appointment.Value.BookId)
+                .ConfigureAwait(false);
+
+            if (!book.IsSuccess)
+                return book.Exception;
+
+            var slotToBeCancelled = book.Value.AvailableHours
+                .FirstOrDefault(x => x.Id == appointment.Value.SlotId);
+
+            if (slotToBeCancelled is null)
+                return new Exception("Slot dos not exists");
+
+            var newSlot = new Time
+            {
+                AvailableHour = slotToBeCancelled.AvailableHour,
+                ProfessionalId = slotToBeCancelled.ProfessionalId,
+            };
+
+            slotToBeCancelled.IsCancelled = true;
+
+            var slots = book.Value.AvailableHours.ToList();
+
+            slots.Add(newSlot);
+
+            book.Value.AvailableHours = slots.OrderBy(x => x.AvailableHour);
+
+            var updateSlotsInBook = await _factoryBook.Update(book.Value)
+                .ConfigureAwait(false);
+
+            if (!updateSlotsInBook.IsSuccess)
+                return updateSlotsInBook.Exception;
+
+            var updateAppointment = await _factoryAppointment.Cancel(appointmentId)
+                .ConfigureAwait(false);
+
+            if (!updateAppointment.IsSuccess)
+                return updateAppointment.Exception;
+
+            return Result.Success();
+        }
+
         public async Task<Result<IEnumerable<AppointmentViewModel>>> GetAppointmentsByCustomerId(string customerId)
         {
             var (isSuccess, appointments, exception) = await _factoryAppointment.GetAppointmentsByCustomerId(customerId).ConfigureAwait(false);
@@ -73,6 +122,8 @@ namespace AppointmentService.Application.Services
             {
                 CustomerId = appointmentRequest.CustomerId,
                 ProfessionalReference = book.Value.ProfessionalReference,
+                BookId = book.Value.Id,
+                SlotId = slot.Id,
                 Date = book.Value.Date,
                 Executed = false,
                 ServiceReference = book.Value.ServiceReference,
