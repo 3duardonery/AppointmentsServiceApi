@@ -22,7 +22,7 @@ namespace AppointmentService.API.Controllers
                 .ConfigureAwait(false);
 
             if (!isSuccess)
-                return BadRequest();
+                return BadRequest(exception.Message);
 
             return Ok(result);
         }

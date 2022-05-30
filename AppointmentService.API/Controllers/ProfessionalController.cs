@@ -26,13 +26,13 @@ namespace AppointmentService.API.Controllers
         [HttpPost]
         public async Task<IActionResult> NewProfessional([FromBody] ProfessionalDto professional)
         {
-            var result = await _professionalService.CreateNewProfessional(professional)
+            var (isSuccess, result, excepetion) = await _professionalService.CreateNewProfessional(professional)
                 .ConfigureAwait(false);
 
-            if (!result.IsSuccess)
-                return BadRequest();
+            if (!isSuccess)
+                return BadRequest(excepetion.Message);
 
-            return Created("", result.Value);
+            return Created("", result);
         }
 
         [HttpPatch]
@@ -43,7 +43,7 @@ namespace AppointmentService.API.Controllers
                 .ConfigureAwait(false);
 
             if (!result.IsSuccess)
-                return BadRequest();
+                return BadRequest(result.Exception);
 
             return Ok();
         }
