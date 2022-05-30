@@ -4,6 +4,7 @@ using AppointmentService.Domain.Services;
 using AppointmentService.Shared.Dto;
 using AppointmentService.Shared.ViewModels;
 using AutoMapper;
+using MongoDB.Bson;
 using OperationResult;
 using System;
 using System.Collections.Generic;
@@ -32,7 +33,11 @@ namespace AppointmentService.Application.Services
 
         public async Task<Result<IEnumerable<BookViewModel>>> GetAvailableBooksByServiceId(string serviceId)
         {
-            var (isSuccess, results, exception) = await _factoryBook.GetBookByService(serviceId).ConfigureAwait(false);
+            var serviceObjectId = ObjectId.Empty;
+
+            ObjectId.TryParse(serviceId, out serviceObjectId);
+
+            var (isSuccess, results, exception) = await _factoryBook.GetBookByService(serviceObjectId).ConfigureAwait(false);
 
             if (!isSuccess)
                 return exception;

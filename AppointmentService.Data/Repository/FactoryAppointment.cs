@@ -17,11 +17,11 @@ namespace AppointmentService.Data.Repository
         public FactoryAppointment(MongoContext mongoContext)
             => _appointments = mongoContext.GetCollection<Appointment>("appointments");
 
-        public async Task<Result> Cancel(string appointmentId)
+        public async Task<Result> Cancel(ObjectId appointmentId)
         {
             try
             {
-                var filter = Builders<Appointment>.Filter.Eq("_id", ObjectId.Parse(appointmentId));
+                var filter = Builders<Appointment>.Filter.Eq("_id", appointmentId);
 
                 var professional = await _appointments.UpdateOneAsync(filter,
                     Builders<Appointment>.Update.Set(rec => rec.IsCancelled, true));
@@ -34,11 +34,11 @@ namespace AppointmentService.Data.Repository
             }
         }
 
-        public async Task<Result<Appointment>> GetAppointmentbyId(string appointmentId)
+        public async Task<Result<Appointment>> GetAppointmentbyId(ObjectId appointmentId)
         {
             try
             {
-                var filter = Builders<Appointment>.Filter.Eq("_id", ObjectId.Parse(appointmentId));
+                var filter = Builders<Appointment>.Filter.Eq("_id", appointmentId);
 
                 var appointments = await _appointments.FindAsync(filter).ConfigureAwait(false);
 
@@ -66,11 +66,11 @@ namespace AppointmentService.Data.Repository
             }
         }
 
-        public async Task<Result<IEnumerable<Appointment>>> GetAppointmentsByProfessionalId(string professionalId)
+        public async Task<Result<IEnumerable<Appointment>>> GetAppointmentsByProfessionalId(ObjectId professionalId)
         {
             try
             {
-                var filter = Builders<Appointment>.Filter.Eq("professionalReference._id", ObjectId.Parse(professionalId));
+                var filter = Builders<Appointment>.Filter.Eq("professionalReference._id", professionalId);
 
                 var appointments = await _appointments.FindAsync(filter).ConfigureAwait(false);
 

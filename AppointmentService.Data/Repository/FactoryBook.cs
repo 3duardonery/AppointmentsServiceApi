@@ -31,11 +31,11 @@ namespace AppointmentService.Data.Repository
             }
         }
 
-        public async Task<Result<IEnumerable<Book>>> GetBookByService(string serviceId)
+        public async Task<Result<IEnumerable<Book>>> GetBookByService(ObjectId serviceId)
         {
             try
             {
-                var filter = Builders<Book>.Filter.Eq("serviceReference._id", ObjectId.Parse(serviceId));
+                var filter = Builders<Book>.Filter.Eq("serviceReference._id", serviceId);
 
                 var books = await _books.FindAsync(filter).ConfigureAwait(false);
 
@@ -47,12 +47,12 @@ namespace AppointmentService.Data.Repository
             }
         }
 
-        public async Task<Result<Book>> GetBookByServiceAndDate(string serviceId, DateTime sheduleDate)
+        public async Task<Result<Book>> GetBookByServiceAndDate(ObjectId serviceId, DateTime sheduleDate)
         {
             try
             {
                 var filterReferenceService = Builders<Book>.Filter
-                    .Eq("serviceReference._id", ObjectId.Parse(serviceId));
+                    .Eq("serviceReference._id", serviceId);
 
                 var filterDate = Builders<Book>.Filter.Eq("date", sheduleDate);
 

@@ -4,6 +4,7 @@ using AppointmentService.Domain.Services;
 using AppointmentService.Shared.Dto;
 using AppointmentService.Shared.ViewModels;
 using AutoMapper;
+using MongoDB.Bson;
 using OperationResult;
 using System;
 using System.Collections.Generic;
@@ -32,8 +33,12 @@ namespace AppointmentService.Application.Services
 
         public async Task<Result> CancelAppointment(string appointmentId)
         {
+            var appointmentObjectId = ObjectId.Empty;
+
+            ObjectId.TryParse(appointmentId, out appointmentObjectId);
+
             var appointment = await _factoryAppointment
-                .GetAppointmentbyId(appointmentId).ConfigureAwait(false);
+                .GetAppointmentbyId(appointmentObjectId).ConfigureAwait(false);
 
             if (!appointment.IsSuccess)
                 return appointment.Exception;
@@ -70,7 +75,7 @@ namespace AppointmentService.Application.Services
             if (!updateSlotsInBook.IsSuccess)
                 return updateSlotsInBook.Exception;
 
-            var updateAppointment = await _factoryAppointment.Cancel(appointmentId)
+            var updateAppointment = await _factoryAppointment.Cancel(appointmentObjectId)
                 .ConfigureAwait(false);
 
             if (!updateAppointment.IsSuccess)
@@ -91,7 +96,11 @@ namespace AppointmentService.Application.Services
 
         public async Task<Result<IEnumerable<AppointmentViewModel>>> GetAppointmentsByProfessionalId(string professionalId)
         {
-            var (isSuccess, appointments, exception) = await _factoryAppointment.GetAppointmentsByProfessionalId(professionalId).ConfigureAwait(false);
+            var professionalObjectId = ObjectId.Empty;
+
+            ObjectId.TryParse(professionalId, out professionalObjectId);
+
+            var (isSuccess, appointments, exception) = await _factoryAppointment.GetAppointmentsByProfessionalId(professionalObjectId).ConfigureAwait(false);
 
             if (!isSuccess)
                 return exception;
@@ -101,7 +110,11 @@ namespace AppointmentService.Application.Services
 
         public async Task<Result<AppointmentViewModel>> Save(AppointmentRequestDto appointmentRequest)
         {
-            var book = await _factoryBook.GetBookByServiceAndDate(appointmentRequest.ServiceId, appointmentRequest.Date).ConfigureAwait(false);
+            var appointmentObjectId = ObjectId.Empty;
+                
+            ObjectId.TryParse(appointmentRequest.ServiceId, out appointmentObjectId);
+
+            var book = await _factoryBook.GetBookByServiceAndDate(appointmentObjectId, appointmentRequest.Date).ConfigureAwait(false);
 
             if (!book.IsSuccess)
                 return book.Exception;
