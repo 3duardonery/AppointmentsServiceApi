@@ -1,7 +1,11 @@
 using AppointmentService.IoC.Database;
 using AppointmentService.IoC.MapperProfile;
 using AppointmentService.IoC.Services;
+using AppointmentService.Shared.Dto;
 using AppointmentService.Shared.Settings;
+using AppointmentService.Shared.Validators;
+using FluentValidation;
+using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -37,6 +41,10 @@ namespace AppointmentService.API
                 options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore
             );
 
+            services.AddFluentValidation();
+
+            services.AddTransient<IValidator<ProfessionalDto>, ProfessionalValidator>();
+
             services.AddServicesInjection();
 
             services.AddSingleton(_appSettings);
@@ -60,8 +68,6 @@ namespace AppointmentService.API
                     }
                 });
             });
-
-
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

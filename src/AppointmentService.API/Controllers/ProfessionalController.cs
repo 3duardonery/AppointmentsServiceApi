@@ -26,6 +26,9 @@ namespace AppointmentService.API.Controllers
         [HttpPost]
         public async Task<IActionResult> NewProfessional([FromBody] ProfessionalDto professional)
         {
+            if (!ModelState.IsValid)
+                return BadRequest();
+
             var (isSuccess, result, excepetion) = await _professionalService.CreateNewProfessional(professional)
                 .ConfigureAwait(false);
 
