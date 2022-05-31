@@ -1,28 +1,11 @@
-name: .NET
+name: Build & Tests
 
-on:
-  workflow_dispatch:    
-    inputs:
-      deploy:
-        description: 'Deploy step to Azure'
-        required: true 
-        type: boolean    
-      logLevel:
-        description: 'Log level'     
-        required: true
-        default: 'warning'
-      tags:
-        description: 'Deploy scenario tags'  
+on:  
   push:
     branches: [ main ]
   pull_request:
     branches: [ main ]
     
-env:
-  AZURE_WEBAPP_NAME: my-app-name    # set this to your application's name
-  AZURE_WEBAPP_PACKAGE_PATH: '.'      # set this to the path to your web app project, defaults to the repository root
-  DOTNET_VERSION: '3.1.x' 
-
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -36,17 +19,10 @@ jobs:
       run: dotnet restore
     - name: Build
       run: dotnet build --no-restore
+    
+  tests:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
     - name: Test
-      run: dotnet test --no-build --verbosity normal
-  
-  deploy:
-     needs: build
-     runs-on: ubuntu-latest
-     steps:
-        # Run dotnet build and publish
-      - name: dotnet build and publish
-        run: |
-          dotnet restore
-          dotnet build --configuration Release
-          dotnet publish -c Release -o '${{ env.AZURE_WEBAPP_PACKAGE_PATH }}/appointment-api'       
- 
+      run: dotnet test --no-build --verbosity normal 
