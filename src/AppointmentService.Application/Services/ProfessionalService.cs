@@ -37,9 +37,12 @@ namespace AppointmentService.Application.Services
 
         public async Task<Result<IEnumerable<ProfessionalViewModel>>> GetAllProfessionals()
         {
-            var professionals = await _factoryProfessional.Professionals().ConfigureAwait(false);
+            var (isSuccess, professionals, exception) = await _factoryProfessional.Professionals().ConfigureAwait(false);
 
-            return Result.Success(_mapper.Map<IEnumerable<ProfessionalViewModel>>(professionals.Value));
+            if (!isSuccess)
+                return Result.Error<IEnumerable<ProfessionalViewModel>>(exception);
+
+            return Result.Success(_mapper.Map<IEnumerable<ProfessionalViewModel>>(professionals));
         }
 
         public async Task<Result> SetServices(string professionalId, List<string> servicesIds)
