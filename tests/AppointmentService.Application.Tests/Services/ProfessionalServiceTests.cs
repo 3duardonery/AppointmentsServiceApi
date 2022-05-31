@@ -6,6 +6,7 @@ using AutoMapper;
 using FluentAssertions;
 using Moq;
 using OperationResult;
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Xunit;
@@ -71,6 +72,49 @@ namespace AppointmentService.Application.Services
             result.Value.Should().NotBeNull();
             result.Value.Id.Should().Be(professional.Id);
             
+        }
+
+        [Fact]
+        public async Task ProfessionalService_WithValidPropertiesThrowAnExceptionOnSave_ShouldBeError()
+        {
+            // Arrange
+            var professional = new Professional
+            {
+                Id = "1234567890",
+                IsEnabled = true,
+                ProfilePicture = "http://wwww.image.com/120/image.png",
+                Name = "",
+                Services = new List<Service>()
+            };
+
+            var requestProfessional = new ProfessionalDto
+            {
+                IsEnabled = true,
+                Name = "",
+                ProfilePicture = "http://wwww.image.com/120/image.png"
+            };
+
+            var responseProfessional = new ProfessionalViewModel
+            {
+                Id = "1234567890",
+                IsEnabled = true,
+                ProfilePicture = "http://wwww.image.com/120/image.png",
+                Name = "",
+                Services = new List<ServiceViewModel>()
+            };
+
+            // Action
+            _mapper.Setup(m => m.Map<Professional>(requestProfessional)).Returns(professional);
+
+            _factoryProfessionalImp.Setup(fact => fact.Save(professional)).Returns(Result.Error<Professional>(new Exception("Generic error with database")));
+
+            _mapper.Setup(m => m.Map<ProfessionalViewModel>(professional)).Returns(responseProfessional);
+
+            var result = await _sut.CreateNewProfessional(requestProfessional);
+
+            // Assert
+            _factoryProfessionalImp.Verify(m => m.Save(professional), Times.Once);
+            result.IsSuccess.Should().Be(false);
         }
     }
 }
