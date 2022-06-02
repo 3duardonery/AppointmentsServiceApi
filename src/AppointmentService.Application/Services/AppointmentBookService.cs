@@ -49,25 +49,7 @@ namespace AppointmentService.Application.Services
             if (!book.IsSuccess)
                 return book.Exception;
 
-            var slotToBeCancelled = book.Value.AvailableHours
-                .FirstOrDefault(x => x.Id == appointment.Value.SlotId);
-
-            if (slotToBeCancelled is null)
-                return new Exception("Slot dos not exists");
-
-            var newSlot = new Time
-            {
-                AvailableHour = slotToBeCancelled.AvailableHour,
-                ProfessionalId = slotToBeCancelled.ProfessionalId,
-            };
-
-            slotToBeCancelled.IsCancelled = true;
-
-            var slots = book.Value.AvailableHours.ToList();
-
-            slots.Add(newSlot);
-
-            book.Value.AvailableHours = slots.OrderBy(x => x.AvailableHour);
+            UpdateBook(book.Value, appointment.Value.SlotId);
 
             var updateSlotsInBook = await _factoryBook.Update(book.Value)
                 .ConfigureAwait(false);
@@ -108,6 +90,75 @@ namespace AppointmentService.Application.Services
             return Result.Success(_mapper.Map<IEnumerable<AppointmentViewModel>>(appointments));
         }
 
+        public async Task<Result<AppointmentViewModel>> Reschedule(ResheduleAppointmentDto resheduleRequest)
+        {
+            var appointmentObjectId = ObjectId.Empty;
+            var serviceObjectId = ObjectId.Empty;
+
+            ObjectId.TryParse(resheduleRequest.AppointmentId, out appointmentObjectId);
+
+            var appointment = await _factoryAppointment
+                .GetAppointmentbyId(appointmentObjectId).ConfigureAwait(false);
+
+            if (!appointment.IsSuccess || appointment.Value == null)
+                return appointment.Exception;
+
+            var book = await _factoryBook.GetBookById(appointment.Value.BookId)
+                .ConfigureAwait(false);
+
+            if (!book.IsSuccess)
+                return book.Exception;
+
+            UpdateBook(book.Value, appointment.Value.SlotId);
+
+            ObjectId.TryParse(resheduleRequest.ServiceId, out serviceObjectId);
+
+            var (resheduleIsSuccess, newBook, resheduleException) = await 
+                _factoryBook.GetBookByServiceAndDate(serviceObjectId, resheduleRequest.Date)
+                .ConfigureAwait(false);
+
+            if (!resheduleIsSuccess)
+                return resheduleException;
+
+            var slot = book.Value.AvailableHours.FirstOrDefault(x => x.AvailableHour
+            .Equals(resheduleRequest.Time) && x.CustomerId is null);
+
+            if (slot is null)
+                return new Exception("The slot already occuppied");
+
+            var reshedule = new Appointment
+            {
+                CustomerId = resheduleRequest.CustomerId,
+                ProfessionalReference = newBook.ProfessionalReference,
+                BookId = newBook.Id,
+                SlotId = slot.Id,
+                Date = newBook.Date,
+                Executed = false,
+                ServiceReference = newBook.ServiceReference,
+                Time = TimeSpan.Parse(slot.AvailableHour),
+
+            };
+
+            var (updateBookIsSuccess, updateBookResult, updateBookexception) = await _factoryBook.Update(book.Value).ConfigureAwait(false);
+
+            if (!updateBookIsSuccess)
+                return updateBookexception;
+
+            var updateAppointment = await _factoryAppointment.Cancel(appointmentObjectId)
+                .ConfigureAwait(false);
+
+            if (!updateAppointment.IsSuccess)
+                return updateAppointment.Exception;
+
+            var appointmentResult = await _factoryAppointment.Save(reshedule)
+               .ConfigureAwait(false);
+
+            if (!appointmentResult.IsSuccess)
+                return appointmentResult.Exception;
+
+            return Result.Success(_mapper.Map<AppointmentViewModel>(appointmentResult.Value));
+        }
+
         public async Task<Result<AppointmentViewModel>> Save(AppointmentRequestDto appointmentRequest)
         {
             var appointmentObjectId = ObjectId.Empty;
@@ -126,8 +177,7 @@ namespace AppointmentService.Application.Services
             .Equals(appointmentRequest.Time) && x.CustomerId is null);
 
             if (slot is null)
-                return new Exception("The slot already occuppied");
-           
+                return new Exception("The slot already occuppied");           
 
             slot.CustomerId = appointmentRequest.CustomerId;
 
@@ -152,10 +202,36 @@ namespace AppointmentService.Application.Services
             var appointmentResult = await _factoryAppointment.Save(appointment)
                 .ConfigureAwait(false);
 
-            if (!isSuccess)
+            if (!appointmentResult.IsSuccess)
                 return appointmentResult.Exception;
 
             return Result.Success(_mapper.Map<AppointmentViewModel>(appointmentResult.Value));
+        }
+
+
+        private static Result<Book> UpdateBook(Book update, string slotId)
+        {
+            var slotToBeCancelled = update.AvailableHours
+                .FirstOrDefault(x => x.Id == slotId);
+
+            if (slotToBeCancelled is null)
+                return new Exception("Slot dos not exists");
+
+            var newSlot = new Time
+            {
+                AvailableHour = slotToBeCancelled.AvailableHour,
+                ProfessionalId = slotToBeCancelled.ProfessionalId,
+            };
+
+            slotToBeCancelled.IsCancelled = true;
+
+            var slots = update.AvailableHours.ToList();
+
+            slots.Add(newSlot);
+
+            update.AvailableHours = slots.OrderBy(x => x.AvailableHour);
+
+            return update;
         }
     }
 }

@@ -28,6 +28,17 @@ namespace AppointmentService.API.Controllers
             return Created("", result);
         }
 
+        [HttpPost("reshedule")]
+        public async Task<IActionResult> RescheduleAppointment([FromBody] ResheduleAppointmentDto request)
+        {
+            var (isSuccess, result, exception) = await _appointmentService.Reschedule(request).ConfigureAwait(false);
+
+            if (!isSuccess)
+                return BadRequest(exception.Message);
+
+            return Ok(result);
+        }
+
         [HttpGet("customer")]
         public async Task<IActionResult> GetCustomerAppointments([FromQuery] string customerId)
         {
