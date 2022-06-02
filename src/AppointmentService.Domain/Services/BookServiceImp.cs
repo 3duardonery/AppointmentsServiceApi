@@ -10,5 +10,6 @@ namespace AppointmentService.Domain.Services
     {
         Task<Result<IEnumerable<BookViewModel>>> GetAvailableBooksByServiceId(string serviceId);
         Task<Result<IEnumerable<BookViewModel>>> MountANewBookWithLimitInDays(OpenBookRequestDto openBookRequest);
+        Task<Result> CancelBookById(string bookId);
     }
 }

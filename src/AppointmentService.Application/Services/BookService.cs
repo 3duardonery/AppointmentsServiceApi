@@ -31,6 +31,17 @@ namespace AppointmentService.Application.Services
             _mapper = mapper;
         }
 
+        public async Task<Result> CancelBookById(string bookId)
+        {
+            var result = await _factoryBook.CancelBook(bookId)
+                .ConfigureAwait(false);
+
+            if (!result.IsSuccess)
+                return result.Exception;
+
+            return Result.Success();
+        }
+
         public async Task<Result<IEnumerable<BookViewModel>>> GetAvailableBooksByServiceId(string serviceId)
         {
             var serviceObjectId = ObjectId.Empty;

@@ -13,6 +13,7 @@ namespace AppointmentService.Domain.Repository
         Task<Result<Book>> GetBookById(string bookId);
         Task<Result<Book>> GetBookByServiceAndDate(ObjectId serviceId, DateTime sheduleDate);
         Task<Result<IEnumerable<Book>>> Save(IEnumerable<Book> book);
-        Task<Result<Book>> Update(Book book);
+        Task<Result<Book>> UpdateAvailableHours(Book book);
+        Task<Result> CancelBook(string bookId);
     }
 }

@@ -68,7 +68,7 @@ namespace AppointmentService.Data.Repository
             }
         }
 
-        public async Task<Result<Book>> Update(Book book)
+        public async Task<Result<Book>> UpdateAvailableHours(Book book)
         {
             try
             {
@@ -94,6 +94,23 @@ namespace AppointmentService.Data.Repository
                 var books = await _books.FindAsync(filter).ConfigureAwait(false);
 
                 return Result.Success(books.FirstOrDefault());
+            }
+            catch (Exception ex)
+            {
+                return ex;
+            }
+        }
+
+        public async Task<Result> CancelBook(string bookId)
+        {
+            try
+            {
+                var filter = Builders<Book>.Filter.Eq("_id", bookId);
+
+                var professional = await _books.UpdateOneAsync(filter,
+                    Builders<Book>.Update.Set(rec => rec.IsEnabled, false));
+
+                return Result.Success();
             }
             catch (Exception ex)
             {
