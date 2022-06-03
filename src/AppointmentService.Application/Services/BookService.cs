@@ -31,9 +31,9 @@ namespace AppointmentService.Application.Services
             _mapper = mapper;
         }
 
-        public async Task<Result> CancelBookById(string bookId)
+        public async Task<Result> CancelBookById(CancelBookRequest request)
         {
-            var result = await _factoryBook.CancelBook(bookId)
+            var result = await _factoryBook.CancelBook(request.BookId)
                 .ConfigureAwait(false);
 
             if (!result.IsSuccess)
