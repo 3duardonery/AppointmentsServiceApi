@@ -11,6 +11,8 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.OpenApi.Models;
+using Serilog;
+using Serilog.Events;
 
 namespace AppointmentService.API
 {
@@ -21,6 +23,11 @@ namespace AppointmentService.API
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
+
+            Log.Logger = new LoggerConfiguration()
+                .ReadFrom.Configuration(configuration)
+                .WriteTo.Console(LogEventLevel.Error)
+                .CreateLogger();
 
             _appSettings = new AppSettings
             {
@@ -34,8 +41,6 @@ namespace AppointmentService.API
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddControllers();
-
             services.AddControllers().AddNewtonsoftJson(options =>
                 options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore
             );
@@ -66,6 +71,12 @@ namespace AppointmentService.API
                         Email = "someemail@somedomain.com"
                     }
                 });
+            });
+
+            services.AddSingleton(Log.Logger);
+
+            services.AddLogging(builder => {
+                builder.AddSerilog(dispose: true);
             });
         }
 

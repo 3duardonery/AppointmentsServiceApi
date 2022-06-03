@@ -6,6 +6,7 @@ using AppointmentService.Shared.ViewModels;
 using AutoMapper;
 using MongoDB.Bson;
 using OperationResult;
+using Serilog;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -18,16 +19,23 @@ namespace AppointmentService.Application.Services
         private readonly FactoryBookImp _factoryBook;
         private readonly FactoryProfessionalServicesImp _factoryProfessionalServices;
         private readonly FactoryProfessionalImp _factoryProfessional;
+        private readonly FactoryLogImp _factoryLog;
+        private readonly ILogger _logger;
         private readonly IMapper _mapper;
 
         public BookService(
         FactoryBookImp factoryBook, 
         FactoryProfessionalServicesImp factoryProfessionalServices,
-        FactoryProfessionalImp factoryProfessional, IMapper mapper)
+        FactoryProfessionalImp factoryProfessional,
+        FactoryLogImp factoryLog,
+        ILogger logger,
+        IMapper mapper)
         {
             _factoryBook = factoryBook;
             _factoryProfessionalServices = factoryProfessionalServices;
             _factoryProfessional = factoryProfessional;
+            _factoryLog = factoryLog;
+            _logger = logger;
             _mapper = mapper;
         }
 
@@ -38,6 +46,15 @@ namespace AppointmentService.Application.Services
 
             if (!result.IsSuccess)
                 return result.Exception;
+
+            var log = new LogEvent();
+
+            log.SetData(request.Reason, "Book.Cancel", "book", request.BookId, request.CancelBy);
+
+            var logResult = await _factoryLog.Save(log).ConfigureAwait(false);
+
+            if (!logResult.IsSuccess)
+                _logger.Error($"[BookCancel] - {logResult.Exception.Message}");
 
             return Result.Success();
         }
