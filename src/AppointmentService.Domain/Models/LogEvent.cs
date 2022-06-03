@@ -10,12 +10,13 @@ namespace AppointmentService.Domain.Models
         public LogEvent() => CreatedAt = DateTime.UtcNow;
 
         public void SetData(string description, string actionType, 
-            string collectionName, string objectId)
+            string collectionName, string objectId, string username)
         {
             ActionType = actionType;
             Description = description;
             CollectionName = collectionName;
             ObjectId = objectId;
+            Username = username;
         }
 
         [BsonId(IdGenerator = typeof(StringObjectIdGenerator))]
@@ -36,5 +37,8 @@ namespace AppointmentService.Domain.Models
 
         [BsonElement("objectId")]
         public string ObjectId { get; private set; }
+
+        [BsonElement("username")]
+        public string Username { get; private set; }
     }
 }

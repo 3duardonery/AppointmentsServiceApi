@@ -49,7 +49,7 @@ namespace AppointmentService.Application.Services
 
             var log = new LogEvent();
 
-            log.SetData(request.Reason, "Book.Cancel", "book", request.BookId);
+            log.SetData(request.Reason, "Book.Cancel", "book", request.BookId, request.CancelBy);
 
             var logResult = await _factoryLog.Save(log).ConfigureAwait(false);
 
