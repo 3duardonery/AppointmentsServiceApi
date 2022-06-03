@@ -6,6 +6,6 @@ namespace AppointmentService.Domain.Repository
 {
     public interface FactoryLogImp
     {
-        Task<Result<Log>> Save(Log log);
+        Task<Result<LogEvent>> Save(LogEvent log);
     }
 }

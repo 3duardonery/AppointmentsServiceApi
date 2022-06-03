@@ -10,12 +10,12 @@ namespace AppointmentService.Data.Repository
 {
     public sealed class FactoryLog : FactoryLogImp
     {
-        private readonly IMongoCollection<Log> _logs;
+        private readonly IMongoCollection<LogEvent> _logs;
 
         public FactoryLog(MongoContext mongoContext)
-            => _logs = mongoContext.GetCollection<Log>("logs");
+            => _logs = mongoContext.GetCollection<LogEvent>("logs");
 
-        public async Task<Result<Log>> Save(Log log)
+        public async Task<Result<LogEvent>> Save(LogEvent log)
         {
             try
             {
