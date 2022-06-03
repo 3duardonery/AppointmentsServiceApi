@@ -51,7 +51,7 @@ namespace AppointmentService.Application.Services
 
             UpdateBook(book.Value, appointment.Value.SlotId);
 
-            var updateSlotsInBook = await _factoryBook.Update(book.Value)
+            var updateSlotsInBook = await _factoryBook.UpdateAvailableHours(book.Value)
                 .ConfigureAwait(false);
 
             if (!updateSlotsInBook.IsSuccess)
@@ -139,7 +139,7 @@ namespace AppointmentService.Application.Services
 
             };
 
-            var (updateBookIsSuccess, updateBookResult, updateBookexception) = await _factoryBook.Update(book.Value).ConfigureAwait(false);
+            var (updateBookIsSuccess, updateBookResult, updateBookexception) = await _factoryBook.UpdateAvailableHours(book.Value).ConfigureAwait(false);
 
             if (!updateBookIsSuccess)
                 return updateBookexception;
@@ -194,7 +194,7 @@ namespace AppointmentService.Application.Services
                 
             };
 
-            var (isSuccess, updateBookResult, exception) = await _factoryBook.Update(book.Value).ConfigureAwait(false);
+            var (isSuccess, updateBookResult, exception) = await _factoryBook.UpdateAvailableHours(book.Value).ConfigureAwait(false);
 
             if (!isSuccess)
                 return exception;

@@ -38,5 +38,19 @@ namespace AppointmentService.API.Controllers
             return Created("", result);
         }
 
+        [HttpDelete("{bookId}")]
+        public async Task<IActionResult> CancelBookById([FromRoute] CancelBookRequest request)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest("bookId does not be null or empty");
+
+            var result = await _bookService.CancelBookById(request)
+                .ConfigureAwait(false);
+
+            if (!result.IsSuccess)
+                return BadRequest(result.Exception.Message);
+
+            return NoContent();
+        }
     }
 }
