@@ -24,7 +24,7 @@ namespace AppointmentService.Application.Services
             _appSettings = appSettings;
         }
 
-        public async Task<Result<AuthResponseViewModel>> LogIn(AuthenticationRequest user)
+        public async Task<Result<AuthResponseViewModel>> LogIn(AuthenticationRequestDto user)
         {
             try
             {

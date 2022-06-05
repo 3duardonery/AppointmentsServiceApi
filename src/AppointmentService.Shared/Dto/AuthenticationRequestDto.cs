@@ -1,8 +1,8 @@
 ﻿namespace AppointmentService.Shared.Dto
 {
-    public sealed class AuthenticationRequest
+    public sealed class AuthenticationRequestDto
     {
-        public AuthenticationRequest() => ReturnSecureToken = true;
+        public AuthenticationRequestDto() => ReturnSecureToken = true;
 
         public string Email { get; set; }
         public string Password { get; set; }

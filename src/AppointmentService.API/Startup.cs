@@ -68,6 +68,7 @@ namespace AppointmentService.API
             services.AddFluentValidation();
 
             services.AddTransient<IValidator<ProfessionalDto>, ProfessionalValidator>();
+            services.AddTransient<IValidator<AuthenticationRequestDto>, AuthenticationRequestValidator>();
 
             services.AddSingleton(_appSettings);
 

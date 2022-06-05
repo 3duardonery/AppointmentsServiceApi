@@ -7,6 +7,6 @@ namespace AppointmentService.Domain.Services
 {
     public interface AuthenticationServiceImp
     {
-        Task<Result<AuthResponseViewModel>> LogIn(AuthenticationRequest user);
+        Task<Result<AuthResponseViewModel>> LogIn(AuthenticationRequestDto user);
     }
 }

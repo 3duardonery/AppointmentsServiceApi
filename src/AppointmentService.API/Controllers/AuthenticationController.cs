@@ -17,8 +17,11 @@ namespace AppointmentService.API.Controllers
             => _authenticationService = authenticationService;
 
         [HttpPost]
-        public async Task<IActionResult> LogIn([FromBody] AuthenticationRequest request)
+        public async Task<IActionResult> LogIn([FromBody] AuthenticationRequestDto request)
         {
+            if (!ModelState.IsValid)
+                return BadRequest();
+
             var (isSuccess, result, exception) = await _authenticationService.LogIn(request).ConfigureAwait(false);
 
             if (!isSuccess)
