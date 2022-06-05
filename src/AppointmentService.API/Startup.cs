@@ -6,10 +6,12 @@ using AppointmentService.Shared.Settings;
 using AppointmentService.Shared.Validators;
 using FluentValidation;
 using FluentValidation.AspNetCore;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Serilog;
 using Serilog.Events;
@@ -32,7 +34,10 @@ namespace AppointmentService.API
             _appSettings = new AppSettings
             {
                 ConnectionString = Configuration.GetValue<string>("ConnectionString"),
-                Database = Configuration.GetValue<string>("Database")
+                Database = Configuration.GetValue<string>("Database"),
+                AuthEndpoint = Configuration.GetValue<string>("AuthEndpoint"),
+                FirebaseToken = Configuration.GetValue<string>("FirebaseToken"),
+                ProjectId = Configuration.GetValue<string>("ProjectId"),
             };
         }
 
@@ -45,13 +50,28 @@ namespace AppointmentService.API
                 options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore
             );
 
+            services
+             .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+             .AddJwtBearer(options =>
+             {
+                 options.Authority = $"https://securetoken.google.com/{_appSettings.ProjectId}";
+                 options.TokenValidationParameters = new TokenValidationParameters
+                 {
+                     ValidateIssuer = true,
+                     ValidIssuer = $"https://securetoken.google.com/{_appSettings.ProjectId}",
+                     ValidateAudience = true,
+                     ValidAudience = _appSettings.ProjectId,
+                     ValidateLifetime = true
+                 };
+             });                                
+
             services.AddFluentValidation();
 
             services.AddTransient<IValidator<ProfessionalDto>, ProfessionalValidator>();
 
-            services.AddServicesInjection();
-
             services.AddSingleton(_appSettings);
+
+            services.AddServicesInjection(_appSettings);
 
             services.AddMongoDBConfiguration(_appSettings);
 
@@ -75,9 +95,11 @@ namespace AppointmentService.API
 
             services.AddSingleton(Log.Logger);
 
-            services.AddLogging(builder => {
+            services.AddLogging(builder =>
+            {
                 builder.AddSerilog(dispose: true);
             });
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -97,9 +119,12 @@ namespace AppointmentService.API
                 options.SpecUrl = "/swagger/v1/swagger.json";
             });
 
+
             app.UseHttpsRedirection();
 
             app.UseRouting();
+
+            app.UseAuthentication();
 
             app.UseAuthorization();
 
