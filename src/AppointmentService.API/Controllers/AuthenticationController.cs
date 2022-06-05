@@ -22,7 +22,7 @@ namespace AppointmentService.API.Controllers
             var (isSuccess, result, exception) = await _authenticationService.LogIn(request).ConfigureAwait(false);
 
             if (!isSuccess)
-                return BadRequest();
+                return Unauthorized();
 
             return Ok(result);
         }
