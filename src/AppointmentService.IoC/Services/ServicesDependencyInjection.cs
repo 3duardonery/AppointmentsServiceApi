@@ -2,13 +2,15 @@
 using AppointmentService.Data.Repository;
 using AppointmentService.Domain.Repository;
 using AppointmentService.Domain.Services;
+using AppointmentService.Shared.Settings;
 using Microsoft.Extensions.DependencyInjection;
+using System;
 
 namespace AppointmentService.IoC.Services
 {
     public static class ServicesDependencyInjection
     {
-        public static void AddServicesInjection(this IServiceCollection services)
+        public static void AddServicesInjection(this IServiceCollection services, AppSettings settings)
         {
             services.AddScoped<ProfessionalServiceImp, ProfessionalService>();
             services.AddScoped<FactoryProfessionalImp, FactoryProfessional>();
@@ -23,6 +25,10 @@ namespace AppointmentService.IoC.Services
             services.AddScoped<AppointmentBookServiceImp, AppointmentBookService>();
 
             services.AddScoped<FactoryLogImp, FactoryLog>();
+
+            services.AddHttpClient<AuthenticationServiceImp, AuthenticationService>(builder => {
+                builder.BaseAddress = new Uri(settings.AuthEndpoint);                
+            });
         }
     }
 }

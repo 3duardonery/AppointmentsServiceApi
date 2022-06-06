@@ -1,10 +1,12 @@
 ﻿using AppointmentService.Domain.Services;
 using AppointmentService.Shared.Dto;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
 
 namespace AppointmentService.API.Controllers
 {
+
     [Route("api/[controller]")]
     [ApiController]
     public class ServicesController : ControllerBase
@@ -14,6 +16,7 @@ namespace AppointmentService.API.Controllers
         public ServicesController(ProfessionalServicesServiceImp professionalServices) 
             => _professionalServices = professionalServices;
 
+        [Authorize]
         [HttpGet]
         public async Task<IActionResult> GetAllServices()
         {
