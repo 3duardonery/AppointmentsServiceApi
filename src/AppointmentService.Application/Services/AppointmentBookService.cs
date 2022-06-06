@@ -129,6 +129,7 @@ namespace AppointmentService.Application.Services
             var reshedule = new Appointment
             {
                 CustomerId = resheduleRequest.CustomerId,
+                CustomerName = resheduleRequest.CustomerName,
                 ProfessionalReference = newBook.ProfessionalReference,
                 BookId = newBook.Id,
                 SlotId = slot.Id,
