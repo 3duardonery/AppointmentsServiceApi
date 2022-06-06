@@ -13,6 +13,7 @@ namespace AppointmentService.Shared.ViewModels
         public bool Executed { get; set; }
         public bool IsCancelled { get; set; }
         public string CustomerId { get; set; }
+        public string CustomerName { get; set; }
         public ProfessionalBookViewModel ProfessionalReference { get; set; }
         public ServiceBookViewModel ServiceReference { get; set; }
     }

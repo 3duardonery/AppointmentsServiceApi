@@ -24,7 +24,9 @@ namespace AppointmentService.Data.Repository
                 var filter = Builders<Appointment>.Filter.Eq("_id", appointmentId);
 
                 var professional = await _appointments.UpdateOneAsync(filter,
-                    Builders<Appointment>.Update.Set(rec => rec.IsCancelled, true));
+                    Builders<Appointment>.Update
+                    .Set(rec => rec.IsCancelled, true)
+                    .Set(rec => rec.UpdatedAt, DateTime.UtcNow));
 
                 return Result.Success();
             }

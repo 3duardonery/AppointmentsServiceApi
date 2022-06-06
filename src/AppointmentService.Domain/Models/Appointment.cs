@@ -40,6 +40,9 @@ namespace AppointmentService.Domain.Models
         [BsonElement("customerId")]
         public string CustomerId { get; set; }
 
+        [BsonElement("customerName")]
+        public string CustomerName { get; set; }
+
         [BsonElement("professionalReference")]
         public Professional ProfessionalReference { get; set; }
 
