@@ -184,6 +184,7 @@ namespace AppointmentService.Application.Services
             var appointment = new Appointment 
             {
                 CustomerId = appointmentRequest.CustomerId,
+                CustomerName = appointmentRequest.CustomerName,
                 ProfessionalReference = book.Value.ProfessionalReference,
                 BookId = book.Value.Id,
                 SlotId = slot.Id,
