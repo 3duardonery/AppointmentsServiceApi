@@ -21,6 +21,7 @@ namespace AppointmentService.API
     public class Startup
     {
         private AppSettings _appSettings;
+        readonly string CorsRuleName = "customCors";
 
         public Startup(IConfiguration configuration)
         {
@@ -63,7 +64,19 @@ namespace AppointmentService.API
                      ValidAudience = _appSettings.ProjectId,
                      ValidateLifetime = true
                  };
-             });                                
+             });
+
+            services.AddCors(options =>
+            {
+                options.AddPolicy(
+                    name: CorsRuleName,
+                    policy =>
+                    {
+                        policy.WithOrigins("http://localhost:4200")
+                                .AllowAnyHeader()
+                                .AllowAnyMethod();
+                    });
+            });
 
             services.AddFluentValidation();
 
@@ -124,6 +137,8 @@ namespace AppointmentService.API
             app.UseHttpsRedirection();
 
             app.UseRouting();
+
+            app.UseCors(CorsRuleName);
 
             app.UseAuthentication();
 
