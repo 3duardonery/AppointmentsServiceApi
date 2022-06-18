@@ -66,6 +66,8 @@ namespace AppointmentService.API
                  };
              });
 
+            services.AddMemoryCache();
+
             services.AddCors(options =>
             {
                 options.AddPolicy(
