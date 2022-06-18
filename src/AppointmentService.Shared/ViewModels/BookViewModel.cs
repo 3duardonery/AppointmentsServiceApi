@@ -9,7 +9,7 @@ namespace AppointmentService.Shared.ViewModels
         public string BookDateStringValue { get; set; }
         public IEnumerable<TimeViewModel> AvailableHours { get; set; }
         public bool IsEnabled { get; set; }
-        public ServiceBookViewModel ServiceReference { get; set; }
+        public List<ServiceBookViewModel> ServiceReferences { get; set; }
         public ProfessionalBookViewModel ProfessionalReference { get; set; }
     }
 }

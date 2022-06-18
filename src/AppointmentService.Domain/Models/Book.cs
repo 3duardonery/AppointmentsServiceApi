@@ -17,7 +17,7 @@ namespace AppointmentService.Domain.Models
         public IEnumerable<Time> AvailableHours { get; set; }
 
         [BsonElement("serviceReference")]
-        public Service ServiceReference { get; set; }
+        public List<Service> ServiceReferences { get; set; }
 
         [BsonElement("professionalReference")]
         public Professional ProfessionalReference { get; set; }

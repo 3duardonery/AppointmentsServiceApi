@@ -10,6 +10,7 @@ using Serilog;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace AppointmentService.Application.Services
@@ -22,6 +23,8 @@ namespace AppointmentService.Application.Services
         private readonly FactoryLogImp _factoryLog;
         private readonly ILogger _logger;
         private readonly IMapper _mapper;
+
+        private readonly int _defaultMinutesForServiceExecution = 60;
 
         public BookService(
         FactoryBookImp factoryBook, 
@@ -87,11 +90,22 @@ namespace AppointmentService.Application.Services
             if (!professionalReference.IsSuccess)
                 return professionalReference.Exception;
 
-            var serviceDuration = await _factoryProfessionalServices
-                .GetServiceById(openBookRequest.ServiceId).ConfigureAwait(false);
+            var serviceDurationInMinutes = _defaultMinutesForServiceExecution;
 
-            if (!serviceDuration.IsSuccess)
-                return serviceDuration.Exception;
+            var servicesReferences = new List<Service>();
+
+            for(var index = 0; index < openBookRequest.ServiceIds.Count; index++)
+            {
+                var serviceResult = await _factoryProfessionalServices
+                    .GetServiceById(openBookRequest.ServiceIds.ElementAt(index)).ConfigureAwait(false);
+
+                serviceDurationInMinutes = serviceResult.Value.Duration;
+
+                servicesReferences.Add(serviceResult.Value);
+            }
+
+            if (openBookRequest.ServiceIds.Count > 1)
+                serviceDurationInMinutes = openBookRequest.Duration;                
 
             for (int start = 0; start <= differenceInDates; start++)
             {
@@ -100,8 +114,8 @@ namespace AppointmentService.Application.Services
                     Date = openBookRequest.StartDate,
                     IsEnabled = true,
                     ProfessionalReference = professionalReference.Value,
-                    ServiceReference = serviceDuration.Value,
-                    AvailableHours = GetAvailableHours(openBookRequest.StartDate, openBookRequest.StartTime, openBookRequest.EndTime, serviceDuration.Value.Duration)
+                    ServiceReferences = servicesReferences,
+                    AvailableHours = GetAvailableHours(openBookRequest.StartDate, openBookRequest.StartTime, openBookRequest.EndTime, serviceDurationInMinutes)
                 };
 
                 avilableBook.Add(book);

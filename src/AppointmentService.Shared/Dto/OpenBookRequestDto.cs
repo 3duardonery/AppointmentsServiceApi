@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace AppointmentService.Shared.Dto
 {
@@ -8,7 +9,8 @@ namespace AppointmentService.Shared.Dto
         public DateTime EndDate { get; set; }
         public TimeSpan StartTime { get; set; }
         public TimeSpan EndTime { get; set; }
-        public string ServiceId { get; set; }
+        public List<string> ServiceIds { get; set; }
+        public int Duration { get; set; }
         public string ProfessionalId { get; set; }
     }
 }

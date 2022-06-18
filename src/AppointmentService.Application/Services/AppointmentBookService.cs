@@ -135,7 +135,8 @@ namespace AppointmentService.Application.Services
                 SlotId = slot.Id,
                 Date = newBook.Date,
                 Executed = false,
-                ServiceReference = newBook.ServiceReference,
+                ServiceReference = newBook.ServiceReferences
+                    .FirstOrDefault(x => x.Id == resheduleRequest.ServiceId),
                 Time = TimeSpan.Parse(slot.AvailableHour),
 
             };
@@ -191,7 +192,7 @@ namespace AppointmentService.Application.Services
                 SlotId = slot.Id,
                 Date = book.Value.Date,
                 Executed = false,
-                ServiceReference = book.Value.ServiceReference,
+                ServiceReference = book.Value.ServiceReferences.FirstOrDefault(x => x.Id == appointmentRequest.ServiceId),
                 Time = TimeSpan.Parse(slot.AvailableHour),
                 
             };

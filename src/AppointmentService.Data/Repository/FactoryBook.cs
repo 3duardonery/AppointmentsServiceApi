@@ -35,7 +35,7 @@ namespace AppointmentService.Data.Repository
         {
             try
             {
-                var filter = Builders<Book>.Filter.Eq("serviceReference._id", serviceId) & Builders<Book>.Filter.Gt("date", DateTime.Today);
+                var filter = Builders<Book>.Filter.ElemMatch(x => x.ServiceReferences, x => x.Id == serviceId.ToString()) & Builders<Book>.Filter.Gt("date", DateTime.Today);
 
                 var books = await _books.FindAsync(filter).ConfigureAwait(false);
 
@@ -51,8 +51,7 @@ namespace AppointmentService.Data.Repository
         {
             try
             {
-                var filterReferenceService = Builders<Book>.Filter
-                    .Eq("serviceReference._id", serviceId);
+                var filterReferenceService = Builders<Book>.Filter.ElemMatch(x => x.ServiceReferences, x => x.Id == serviceId.ToString());
 
                 var filterDate = Builders<Book>.Filter.Eq("date", sheduleDate);
 
