@@ -19,6 +19,9 @@ namespace AppointmentService.Domain.Models
         [BsonElement("customerId")]
         public string CustomerId { get; set; }
 
+        [BsonElement("customerName")]
+        public string CustomerName { get; set; }
+
         [BsonElement("isCancelled")]
         public bool IsCancelled { get; set; }
 

@@ -9,6 +9,8 @@ namespace AppointmentService.Domain.Services
     public interface BookServiceImp
     {
         Task<Result<IEnumerable<BookViewModel>>> GetAvailableBooksByServiceId(string serviceId);
+
+        Task<Result<IEnumerable<BookViewModel>>> GetAvailableBooksByProfessionalEmail(string email);
         Task<Result<IEnumerable<BookViewModel>>> MountANewBookWithLimitInDays(OpenBookRequestDto openBookRequest);
         Task<Result> CancelBookById(CancelBookRequest request);
     }

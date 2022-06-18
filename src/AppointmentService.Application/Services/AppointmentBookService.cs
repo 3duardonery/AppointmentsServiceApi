@@ -184,6 +184,7 @@ namespace AppointmentService.Application.Services
                 return new Exception("The slot already occuppied");           
 
             slot.CustomerId = appointmentRequest.CustomerId;
+            slot.CustomerName = appointmentRequest.CustomerName;
 
             var appointment = new Appointment 
             {

@@ -29,6 +29,19 @@ namespace AppointmentService.API.Controllers
             return Ok(result);
         }
 
+        [HttpGet("professional")]
+        public async Task<IActionResult> GetBookByEmail([FromQuery] string email)
+        {
+            var (isSuccess, result, exception) = await _bookService
+                .GetAvailableBooksByProfessionalEmail(email)
+                .ConfigureAwait(false);
+
+            if (!isSuccess)
+                return BadRequest(exception.Message);
+
+            return Ok(result);
+        }
+
         [HttpPost]
         public async Task<IActionResult> CreateANewBook([FromBody] OpenBookRequestDto openBookRequest)
         {

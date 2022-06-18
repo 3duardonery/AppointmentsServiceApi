@@ -62,6 +62,17 @@ namespace AppointmentService.Application.Services
             return Result.Success();
         }
 
+        public async Task<Result<IEnumerable<BookViewModel>>> GetAvailableBooksByProfessionalEmail(string email)
+        {
+
+            var (isSuccess, results, exception) = await _factoryBook.GetBookByProfesionalEmail(email).ConfigureAwait(false);
+
+            if (!isSuccess)
+                return exception;
+
+            return Result.Success(_mapper.Map<IEnumerable<BookViewModel>>(results));
+        }
+
         public async Task<Result<IEnumerable<BookViewModel>>> GetAvailableBooksByServiceId(string serviceId)
         {
             var serviceObjectId = ObjectId.Empty;

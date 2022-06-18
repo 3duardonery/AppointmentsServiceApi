@@ -47,6 +47,22 @@ namespace AppointmentService.Data.Repository
             }
         }
 
+        public async Task<Result<IEnumerable<Book>>> GetBookByProfesionalEmail(string email)
+        {
+            try
+            {
+                var filter = Builders<Book>.Filter.Eq("professionalReference.email", email) & Builders<Book>.Filter.Gt("date", DateTime.Today);
+
+                var books = await _books.FindAsync(filter).ConfigureAwait(false);
+
+                return Result.Success(books.ToEnumerable());
+            }
+            catch (Exception ex)
+            {
+                return ex;
+            }
+        }
+
         public async Task<Result<Book>> GetBookByServiceAndDate(ObjectId serviceId, DateTime sheduleDate)
         {
             try
