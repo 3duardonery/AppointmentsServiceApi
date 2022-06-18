@@ -14,6 +14,9 @@ namespace AppointmentService.Domain.Models
         [BsonElement("name")]
         public string Name { get; set; }
 
+        [BsonElement("email")]
+        public string Email { get; set; }
+
         [BsonElement("profilePicture")]
         public string ProfilePicture { get; set; }
 

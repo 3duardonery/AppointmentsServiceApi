@@ -76,13 +76,15 @@ namespace AppointmentService.Application.Services
             return Result.Success(_mapper.Map<IEnumerable<AppointmentViewModel>>(appointments));
         }
 
-        public async Task<Result<IEnumerable<AppointmentViewModel>>> GetAppointmentsByProfessionalId(string professionalId)
+        public async Task<Result<IEnumerable<AppointmentViewModel>>> GetAppointmentsByProfessionalId(string email)
         {
-            var professionalObjectId = ObjectId.Empty;
+            var professionalReference = await _factoryProfessional.GetProfessionalByEmail(email).ConfigureAwait(false);
 
-            ObjectId.TryParse(professionalId, out professionalObjectId);
+            var professionalId = ObjectId.Empty;
 
-            var (isSuccess, appointments, exception) = await _factoryAppointment.GetAppointmentsByProfessionalId(professionalObjectId).ConfigureAwait(false);
+            ObjectId.TryParse(professionalReference.Value.Id, out professionalId);
+
+            var (isSuccess, appointments, exception) = await _factoryAppointment.GetAppointmentsByProfessionalId(professionalId).ConfigureAwait(false);
 
             if (!isSuccess)
                 return exception;

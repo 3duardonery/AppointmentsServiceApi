@@ -53,9 +53,9 @@ namespace AppointmentService.API.Controllers
         }
 
         [HttpGet("professional")]
-        public async Task<IActionResult> GetProfessionalAppointments([FromQuery] string professionalId)
+        public async Task<IActionResult> GetProfessionalAppointments([FromQuery] string email)
         {
-            var (isSucces, appointments, exception) = await _appointmentService.GetAppointmentsByProfessionalId(professionalId).ConfigureAwait(false);
+            var (isSucces, appointments, exception) = await _appointmentService.GetAppointmentsByProfessionalId(email).ConfigureAwait(false);
 
             if (!isSucces)
                 return BadRequest(exception.Message);
