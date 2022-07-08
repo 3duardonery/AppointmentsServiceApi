@@ -6,6 +6,7 @@ using AppointmentService.Shared.ViewModels;
 using AutoMapper;
 using OperationResult;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace AppointmentService.Application.Services
@@ -28,6 +29,18 @@ namespace AppointmentService.Application.Services
             var professional = _mapper.Map<Professional>(professionalDto);
 
             var (isSuccess, result, exception) = await _factoryProfessional.Save(professional).ConfigureAwait(false);
+
+            if (!isSuccess)
+                return Result.Error<ProfessionalViewModel>(exception);
+
+            return Result.Success(_mapper.Map<ProfessionalViewModel>(result));
+        }
+
+        public async Task<Result<ProfessionalViewModel>> GetAllProfessionalByEmail(string email)
+        {
+            var (isSuccess, professionals, exception) = await _factoryProfessional.Professionals().ConfigureAwait(false);
+
+            var result = professionals.FirstOrDefault(e => e.Email == email);
 
             if (!isSuccess)
                 return Result.Error<ProfessionalViewModel>(exception);
