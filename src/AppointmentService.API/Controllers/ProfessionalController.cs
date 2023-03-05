@@ -46,7 +46,7 @@ namespace AppointmentService.API.Controllers
             if (!results.IsSuccess)
                 return BadRequest(results.Exception.Message);
 
-            return Ok(results);
+            return Ok(results.Value);
         }
 
         [HttpGet("email")]
