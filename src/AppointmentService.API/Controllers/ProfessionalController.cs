@@ -41,7 +41,7 @@ namespace AppointmentService.API.Controllers
                 SlidingExpiration = TimeSpan.FromSeconds(1200)
             };
 
-            _memoryCache.Set(PROFESSIONAL_KEY, results, memoryCacheEntryOptions);
+            _memoryCache.Set(PROFESSIONAL_KEY, results.Value, memoryCacheEntryOptions);
 
             if (!results.IsSuccess)
                 return BadRequest(results.Exception.Message);
