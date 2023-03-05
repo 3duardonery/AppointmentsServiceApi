@@ -140,6 +140,8 @@ namespace AppointmentService.API
 
             app.UseRouting();
 
+            app.UseSentryTracing();
+
             app.UseCors(CorsRuleName);
 
             app.UseAuthentication();
