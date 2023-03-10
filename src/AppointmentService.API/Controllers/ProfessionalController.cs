@@ -3,6 +3,7 @@ using AppointmentService.Shared.Dto;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Memory;
+using Sentry;
 using System;
 using System.Threading.Tasks;
 
@@ -15,63 +16,82 @@ namespace AppointmentService.API.Controllers
     {
         private readonly ProfessionalServiceImp _professionalService;
         private readonly IMemoryCache _memoryCache;
+        private readonly IHub _sentryHub;
         private const string PROFESSIONAL_KEY = "professional";
         private const string PROFESSIONAL_EMAIL_KEY = "professional_email";
+        private const string CACHE_DESCRIPTION = "CACHED_VALUES";
+        private const int ONE_HOUR_IN_SECONDS = 3600;
+        private const int TWENTY_MINUTES_IN_SECONDS = 1200;
 
-        public ProfessionalController(ProfessionalServiceImp professionalService, IMemoryCache memoryCache)
+        public ProfessionalController(ProfessionalServiceImp professionalService, IMemoryCache memoryCache, IHub sentryHub)
         {
             _professionalService = professionalService;
             _memoryCache = memoryCache;
+            _sentryHub = sentryHub;
         }
 
         [HttpGet]
         public async Task<IActionResult> GetAllProfessionals()
         {
+            var childSpan = _sentryHub.GetSpan()?.StartChild("get-all-professionals");
             if (_memoryCache.TryGetValue(PROFESSIONAL_KEY, out object services))
             {
+                childSpan.Description = CACHE_DESCRIPTION;
+                childSpan.Finish(SpanStatus.Ok);
                 return Ok(services);
             }
 
-            var results = await _professionalService
+            var (isSuccess, professionals, exception) = await _professionalService
                 .GetAllProfessionals().ConfigureAwait(false);
 
             var memoryCacheEntryOptions = new MemoryCacheEntryOptions
             {
-                AbsoluteExpirationRelativeToNow = TimeSpan.FromSeconds(3600),
-                SlidingExpiration = TimeSpan.FromSeconds(1200)
+                AbsoluteExpirationRelativeToNow = TimeSpan.FromSeconds(ONE_HOUR_IN_SECONDS),
+                SlidingExpiration = TimeSpan.FromSeconds(TWENTY_MINUTES_IN_SECONDS)
             };
 
-            _memoryCache.Set(PROFESSIONAL_KEY, results.Value, memoryCacheEntryOptions);
+            _memoryCache.Set(PROFESSIONAL_KEY, professionals, memoryCacheEntryOptions);
 
-            if (!results.IsSuccess)
-                return BadRequest(results.Exception.Message);
+            if (!isSuccess)
+            {
+                childSpan.Finish(exception);
+                return BadRequest(exception.Message);
+            }
 
-            return Ok(results.Value);
+            childSpan.Finish(SpanStatus.Ok);
+
+            return Ok(professionals);
         }
 
         [HttpGet("email")]
         public async Task<IActionResult> GetAllProfessionalByEmail([FromQuery] string email)
         {
-            if (_memoryCache.TryGetValue(PROFESSIONAL_EMAIL_KEY, out object professional))
+            var childSpan = _sentryHub.GetSpan()?.StartChild("get-all-professionals-by-email");
+            if (_memoryCache.TryGetValue(PROFESSIONAL_EMAIL_KEY, out object professionalCache))
             {
-                return Ok(professional);
+                return Ok(professionalCache);
             }
 
-            var results = await _professionalService
+            var (isSuccess, professional, exception) = await _professionalService
                 .GetAllProfessionalByEmail(email).ConfigureAwait(false);
 
             var memoryCacheEntryOptions = new MemoryCacheEntryOptions
             {
-                AbsoluteExpirationRelativeToNow = TimeSpan.FromSeconds(3600),
-                SlidingExpiration = TimeSpan.FromSeconds(1200)
+                AbsoluteExpirationRelativeToNow = TimeSpan.FromSeconds(ONE_HOUR_IN_SECONDS),
+                SlidingExpiration = TimeSpan.FromSeconds(TWENTY_MINUTES_IN_SECONDS)
             };
 
-            _memoryCache.Set(PROFESSIONAL_EMAIL_KEY, results.Value, memoryCacheEntryOptions);
+            _memoryCache.Set(PROFESSIONAL_EMAIL_KEY, professional, memoryCacheEntryOptions);
 
-            if (!results.IsSuccess)
-                return BadRequest(results.Exception.Message);
+            if (!isSuccess)
+            {
+                childSpan.Finish(exception);
+                return BadRequest(exception.Message);
+            }
 
-            return Ok(results.Value);
+            childSpan.Finish(SpanStatus.Ok);
+
+            return Ok(professional);
         }
 
         [HttpPost]
@@ -80,11 +100,18 @@ namespace AppointmentService.API.Controllers
             if (!ModelState.IsValid)
                 return BadRequest();
 
-            var (isSuccess, result, excepetion) = await _professionalService.CreateNewProfessional(professional)
+            var childSpan = _sentryHub.GetSpan()?.StartChild("create-new-professional");
+
+            var (isSuccess, result, exception) = await _professionalService.CreateNewProfessional(professional)
                 .ConfigureAwait(false);
 
             if (!isSuccess)
-                return BadRequest(excepetion.Message);
+            {
+                childSpan.Finish(exception);
+                return BadRequest(exception.Message);
+            }
+
+            childSpan.Finish(SpanStatus.Ok);
 
             return Created("", result);
         }
@@ -92,12 +119,18 @@ namespace AppointmentService.API.Controllers
         [HttpPatch]
         public async Task<IActionResult> AddServiceDependency([FromBody] SetServicesRequestDto request)
         {
-            var result = await _professionalService
+            var childSpan = _sentryHub.GetSpan()?.StartChild("add-service-dependency");
+            var (isSuccess, exception) = await _professionalService
                 .SetServices(request.ProfessionalId, request.ServiceIds)
                 .ConfigureAwait(false);
 
-            if (!result.IsSuccess)
-                return BadRequest(result.Exception);
+            if (!isSuccess)
+            {
+                childSpan.Finish(exception);
+                return BadRequest(exception.Message);
+            }
+
+            childSpan.Finish(SpanStatus.Ok);
 
             return Ok();
         }
