@@ -36,10 +36,16 @@ namespace AppointmentService.API.Controllers
         [HttpPost("reshedule")]
         public async Task<IActionResult> RescheduleAppointment([FromBody] ResheduleAppointmentDto request)
         {
+            var childSpan = _sentryHub.GetSpan()?.StartChild("rescheduler-appointment-customer");
             var (isSuccess, result, exception) = await _appointmentService.Reschedule(request).ConfigureAwait(false);
 
             if (!isSuccess)
+            {
+                childSpan.Finish(exception);
                 return BadRequest(exception.Message);
+            }
+
+            childSpan.Finish(SpanStatus.Ok);
 
             return Ok(result);
         }
@@ -64,10 +70,16 @@ namespace AppointmentService.API.Controllers
         [HttpGet("professional")]
         public async Task<IActionResult> GetProfessionalAppointments([FromQuery] string email)
         {
+            var childSpan = _sentryHub.GetSpan()?.StartChild("get-professional-appointments");
             var (isSucces, appointments, exception) = await _appointmentService.GetAppointmentsByProfessionalId(email).ConfigureAwait(false);
 
             if (!isSucces)
+            {
+                childSpan.Finish(exception);
                 return BadRequest(exception.Message);
+            }
+
+            childSpan.Finish(SpanStatus.Ok);
 
             return Ok(appointments);
         }
@@ -75,10 +87,14 @@ namespace AppointmentService.API.Controllers
         [HttpPatch("cancel")]
         public async Task<IActionResult> CancelAppointment([FromQuery] string appointmentId)
         {
-            var resultOfAppointmentCancellation = await _appointmentService.CancelAppointment(appointmentId).ConfigureAwait(false);
+            var childSpan = _sentryHub.GetSpan()?.StartChild("cancel-appointment");
+            var (isSuccess, exception) = await _appointmentService.CancelAppointment(appointmentId).ConfigureAwait(false);
 
-            if (!resultOfAppointmentCancellation.IsSuccess)
-                return BadRequest(resultOfAppointmentCancellation.Exception);
+            if (!isSuccess)
+            {
+                childSpan.Finish(exception);
+                return BadRequest(exception.Message);
+            }
 
             return Ok();
         }
