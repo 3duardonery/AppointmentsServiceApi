@@ -1,7 +1,7 @@
-﻿using MongoDB.Bson;
+﻿using System.Collections.Generic;
+using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 using MongoDB.Bson.Serialization.IdGenerators;
-using System.Collections.Generic;
 
 namespace AppointmentService.Domain.Models
 {
@@ -25,6 +25,5 @@ namespace AppointmentService.Domain.Models
 
         [BsonElement("services")]
         public IEnumerable<Service> Services { get; set; }
-
     }
 }

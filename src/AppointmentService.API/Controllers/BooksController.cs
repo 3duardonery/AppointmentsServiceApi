@@ -24,7 +24,7 @@ namespace AppointmentService.API.Controllers
                 .ConfigureAwait(false);
 
             if (!isSuccess)
-                return BadRequest(exception.Message);
+                return BadRequest(exception?.Message);
 
             return Ok(result);
         }
@@ -37,7 +37,7 @@ namespace AppointmentService.API.Controllers
                 .ConfigureAwait(false);
 
             if (!isSuccess)
-                return BadRequest(exception.Message);
+                return BadRequest(exception?.Message);
 
             return Ok(result);
         }

@@ -1,4 +1,8 @@
-﻿using AppointmentService.Domain.Models;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using AppointmentService.Domain.Models;
 using AppointmentService.Domain.Repository;
 using AppointmentService.Domain.Services;
 using AppointmentService.Shared.Dto;
@@ -6,10 +10,6 @@ using AppointmentService.Shared.ViewModels;
 using AutoMapper;
 using MongoDB.Bson;
 using OperationResult;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace AppointmentService.Application.Services
 {
@@ -20,7 +20,7 @@ namespace AppointmentService.Application.Services
         private readonly FactoryProfessionalImp _factoryProfessional;
         private readonly IMapper _mapper;
 
-        public AppointmentBookService(FactoryAppointmentImp factoryAppointment, 
+        public AppointmentBookService(FactoryAppointmentImp factoryAppointment,
             FactoryBookImp factoryBook,
             FactoryProfessionalImp factoryProfessional,
             IMapper mapper)
@@ -115,7 +115,7 @@ namespace AppointmentService.Application.Services
 
             ObjectId.TryParse(resheduleRequest.ServiceId, out serviceObjectId);
 
-            var (resheduleIsSuccess, newBook, resheduleException) = await 
+            var (resheduleIsSuccess, newBook, resheduleException) = await
                 _factoryBook.GetBookByServiceAndDate(serviceObjectId, resheduleRequest.Date)
                 .ConfigureAwait(false);
 
@@ -132,13 +132,13 @@ namespace AppointmentService.Application.Services
             {
                 CustomerId = resheduleRequest.CustomerId,
                 CustomerName = resheduleRequest.CustomerName,
-                ProfessionalReference = newBook.ProfessionalReference,
-                BookId = newBook.Id,
+                ProfessionalReference = newBook?.ProfessionalReference,
+                BookId = newBook?.Id,
                 SlotId = slot.Id,
                 Date = newBook.Date,
                 Executed = false,
-                ServiceReference = newBook.ServiceReferences
-                    .FirstOrDefault(x => x.Id == resheduleRequest.ServiceId),
+                ServiceReference = newBook?.ServiceReferences
+                   ?.FirstOrDefault(x => x.Id == resheduleRequest?.ServiceId),
                 Time = TimeSpan.Parse(slot.AvailableHour),
 
             };
@@ -166,7 +166,7 @@ namespace AppointmentService.Application.Services
         public async Task<Result<AppointmentViewModel>> Save(AppointmentRequestDto appointmentRequest)
         {
             var appointmentObjectId = ObjectId.Empty;
-                
+
             ObjectId.TryParse(appointmentRequest.ServiceId, out appointmentObjectId);
 
             var book = await _factoryBook.GetBookByServiceAndDate(appointmentObjectId, appointmentRequest.Date).ConfigureAwait(false);
@@ -181,12 +181,12 @@ namespace AppointmentService.Application.Services
             .Equals(appointmentRequest.Time) && x.CustomerId is null);
 
             if (slot is null)
-                return new Exception("The slot already occuppied");           
+                return new Exception("The slot already occuppied");
 
             slot.CustomerId = appointmentRequest.CustomerId;
             slot.CustomerName = appointmentRequest.CustomerName;
 
-            var appointment = new Appointment 
+            var appointment = new Appointment
             {
                 CustomerId = appointmentRequest.CustomerId,
                 CustomerName = appointmentRequest.CustomerName,
@@ -197,7 +197,7 @@ namespace AppointmentService.Application.Services
                 Executed = false,
                 ServiceReference = book.Value.ServiceReferences.FirstOrDefault(x => x.Id == appointmentRequest.ServiceId),
                 Time = TimeSpan.Parse(slot.AvailableHour),
-                
+
             };
 
             var (isSuccess, updateBookResult, exception) = await _factoryBook.UpdateAvailableHours(book.Value).ConfigureAwait(false);

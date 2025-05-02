@@ -1,9 +1,14 @@
+using System;
+using System.Collections.Generic;
+using AppointmentService.Domain.Commands;
+using AppointmentService.Domain.Queries;
 using AppointmentService.IoC.Database;
 using AppointmentService.IoC.MapperProfile;
 using AppointmentService.IoC.Services;
 using AppointmentService.Shared.Dto;
 using AppointmentService.Shared.Settings;
 using AppointmentService.Shared.Validators;
+using AppointmentService.Shared.ViewModels;
 using FluentValidation;
 using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -12,6 +17,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using NetDevPack.SimpleMediator;
+using OperationResult;
 using Serilog;
 using Serilog.Events;
 
@@ -25,28 +32,34 @@ Log.Logger = new LoggerConfiguration()
 
 AppSettings _appSettings = new AppSettings
 {
-    ConnectionString = builder.Configuration.GetValue<string>("ConnectionString"),
-    Database = builder.Configuration.GetValue<string>("Database"),
-    AuthEndpoint = builder.Configuration.GetValue<string>("AuthEndpoint"),
-    FirebaseToken = builder.Configuration.GetValue<string>("FirebaseToken"),
-    ProjectId = builder.Configuration.GetValue<string>("ProjectId"),
+    ConnectionString = builder.Configuration.GetValue<string>("ConnectionString") ?? "",
+    Database = builder.Configuration.GetValue<string>("Database") ?? "",
+    AuthEndpoint = builder.Configuration.GetValue<string>("AuthEndpoint") ?? "",
+    FirebaseToken = builder.Configuration.GetValue<string>("FirebaseToken") ?? "",
+    ProjectId = builder.Configuration.GetValue<string>("ProjectId") ?? "",
 };
 
-builder.Services.AddControllers().AddNewtonsoftJson(options =>
-               options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore
-           );
+if (_appSettings is { } && _appSettings.ConnectionString == string.Empty)
+{
+    throw new ArgumentNullException(nameof(_appSettings.ConnectionString), "ConnectionString is not set in appsettings.json");
+}
+
+builder.Services.AddControllers()
+    .AddNewtonsoftJson(options =>
+        options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore
+    );
 
 builder.Services
  .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
  .AddJwtBearer(options =>
  {
-     options.Authority = $"https://securetoken.google.com/{_appSettings.ProjectId}";
+     options.Authority = $"https://securetoken.google.com/{_appSettings?.ProjectId}";
      options.TokenValidationParameters = new TokenValidationParameters
      {
          ValidateIssuer = true,
-         ValidIssuer = $"https://securetoken.google.com/{_appSettings.ProjectId}",
+         ValidIssuer = $"https://securetoken.google.com/{_appSettings?.ProjectId}",
          ValidateAudience = true,
-         ValidAudience = _appSettings.ProjectId,
+         ValidAudience = _appSettings?.ProjectId,
          ValidateLifetime = true
      };
  });
@@ -64,16 +77,24 @@ builder.Services.AddCors(options =>
     .AllowAnyMethod();
     });
 });
+builder.Services.AddScoped<IMediator, Mediator>();
+
+builder.Services
+    .AddTransient<IRequestHandler<CreateNewProfessionalCommand, Result<ProfessionalViewModel>>, CreateNewProfessionalCommandHandler>()
+    .AddTransient<IRequestHandler<UpdateProfessionalServicesDependenciesCommand, Result>, UpdateProfessionalServicesDependenciesCommandHandler>()
+    .AddTransient<IRequestHandler<GetProfessionalByEmailQuery, Result<ProfessionalViewModel>>, GetProfessionalByEmailQueryHandler>()
+    .AddTransient<IRequestHandler<GetAllProfessionalsQuery, Result<IEnumerable<ProfessionalViewModel>>>, GetAllProfessionalsQueryHandler>();
+
 builder.Services.AddFluentValidation();
 
 builder.Services.AddTransient<IValidator<ProfessionalDto>, ProfessionalValidator>();
 builder.Services.AddTransient<IValidator<AuthenticationRequestDto>, AuthenticationRequestValidator>();
 
-builder.Services.AddSingleton(_appSettings);
+builder.Services.AddSingleton(_appSettings!);
 
-builder.Services.AddServicesInjection(_appSettings);
+builder.Services.AddServicesInjection(_appSettings!);
 
-builder.Services.AddMongoDBConfiguration(_appSettings);
+builder.Services.AddMongoDBConfiguration(_appSettings!);
 
 builder.Services.AddMapperProfileConfiguration();
 
@@ -99,6 +120,7 @@ builder.Services.AddLogging(builder =>
 {
     builder.AddSerilog(dispose: true);
 });
+
 
 var app = builder.Build();
 

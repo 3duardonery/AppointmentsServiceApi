@@ -2,10 +2,10 @@
 {
     public sealed class AppSettings
     {
-        public string ConnectionString { get; set; }
-        public string Database { get; set; }
-        public string FirebaseToken { get; set; }
-        public string AuthEndpoint { get; set; }
-        public string ProjectId { get; set; }
+        public required string ConnectionString { get; set; }
+        public required string Database { get; set; }
+        public required string FirebaseToken { get; set; }
+        public required string AuthEndpoint { get; set; }
+        public required string ProjectId { get; set; }
     }
 }

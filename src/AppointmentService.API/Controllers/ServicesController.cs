@@ -1,10 +1,10 @@
-﻿using AppointmentService.Domain.Services;
+﻿using System;
+using System.Threading.Tasks;
+using AppointmentService.Domain.Services;
 using AppointmentService.Shared.Dto;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Memory;
-using System;
-using System.Threading.Tasks;
 
 namespace AppointmentService.API.Controllers
 {
@@ -29,7 +29,7 @@ namespace AppointmentService.API.Controllers
         public async Task<IActionResult> GetAllServices()
         {
 
-            if (_memoryCache.TryGetValue(SERVICES_KEY, out object services))
+            if (_memoryCache.TryGetValue(SERVICES_KEY, out object? services))
             {
                 return Ok(services);
             }

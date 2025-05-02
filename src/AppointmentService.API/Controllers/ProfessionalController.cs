@@ -1,47 +1,23 @@
-﻿using AppointmentService.Domain.Services;
-using AppointmentService.Shared.Dto;
+﻿using System.Threading.Tasks;
+using AppointmentService.Domain.Commands;
+using AppointmentService.Domain.Queries;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Caching.Memory;
-using System;
-using System.Threading.Tasks;
+using NetDevPack.SimpleMediator;
 
 namespace AppointmentService.API.Controllers
 {
     [Authorize]
     [Route("api/[controller]")]
     [ApiController]
-    public class ProfessionalController : ControllerBase
+    public class ProfessionalController(IMediator _mediator) : ControllerBase
     {
-        private readonly ProfessionalServiceImp _professionalService;
-        private readonly IMemoryCache _memoryCache;
-        private const string PROFESSIONAL_KEY = "professional";
-        private const string PROFESSIONAL_EMAIL_KEY = "professional_email";
-
-        public ProfessionalController(ProfessionalServiceImp professionalService, IMemoryCache memoryCache)
-        {
-            _professionalService = professionalService;
-            _memoryCache = memoryCache;
-        }
 
         [HttpGet]
         public async Task<IActionResult> GetAllProfessionals()
         {
-            if (_memoryCache.TryGetValue(PROFESSIONAL_KEY, out object services))
-            {
-                return Ok(services);
-            }
-
-            var results = await _professionalService
-                .GetAllProfessionals().ConfigureAwait(false);
-
-            var memoryCacheEntryOptions = new MemoryCacheEntryOptions
-            {
-                AbsoluteExpirationRelativeToNow = TimeSpan.FromSeconds(3600),
-                SlidingExpiration = TimeSpan.FromSeconds(1200)
-            };
-
-            _memoryCache.Set(PROFESSIONAL_KEY, results.Value, memoryCacheEntryOptions);
+            var results = await _mediator.Send(new GetAllProfessionalsQuery())
+                 .ConfigureAwait(false);
 
             if (!results.IsSuccess)
                 return BadRequest(results.Exception.Message);
@@ -52,48 +28,35 @@ namespace AppointmentService.API.Controllers
         [HttpGet("email")]
         public async Task<IActionResult> GetAllProfessionalByEmail([FromQuery] string email)
         {
-            if (_memoryCache.TryGetValue(PROFESSIONAL_EMAIL_KEY, out object professional))
-            {
-                return Ok(professional);
-            }
+            var professional = await _mediator.Send(new GetProfessionalByEmailQuery { Email = email })
+                .ConfigureAwait(false);
 
-            var results = await _professionalService
-                .GetAllProfessionalByEmail(email).ConfigureAwait(false);
+            if (!professional.IsSuccess)
+                return BadRequest(professional.Exception.Message);
 
-            var memoryCacheEntryOptions = new MemoryCacheEntryOptions
-            {
-                AbsoluteExpirationRelativeToNow = TimeSpan.FromSeconds(3600),
-                SlidingExpiration = TimeSpan.FromSeconds(1200)
-            };
-
-            _memoryCache.Set(PROFESSIONAL_EMAIL_KEY, results.Value, memoryCacheEntryOptions);
-
-            if (!results.IsSuccess)
-                return BadRequest(results.Exception.Message);
-
-            return Ok(results.Value);
+            return Ok(professional.Value);
         }
 
         [HttpPost]
-        public async Task<IActionResult> NewProfessional([FromBody] ProfessionalDto professional)
+        public async Task<IActionResult> NewProfessional([FromBody] CreateNewProfessionalCommand professional)
         {
             if (!ModelState.IsValid)
                 return BadRequest();
 
-            var (isSuccess, result, excepetion) = await _professionalService.CreateNewProfessional(professional)
+            var (isSuccess, data, exception) = await _mediator.Send(professional)
                 .ConfigureAwait(false);
 
             if (!isSuccess)
-                return BadRequest(excepetion.Message);
+                return BadRequest(exception?.Message);
 
-            return Created("", result);
+            return Created("", data);
         }
 
         [HttpPatch]
-        public async Task<IActionResult> AddServiceDependency([FromBody] SetServicesRequestDto request)
+        public async Task<IActionResult> AddServiceDependency([FromBody] UpdateProfessionalServicesDependenciesCommand request)
         {
-            var result = await _professionalService
-                .SetServices(request.ProfessionalId, request.ServiceIds)
+
+            var result = await _mediator.Send(request)
                 .ConfigureAwait(false);
 
             if (!result.IsSuccess)
