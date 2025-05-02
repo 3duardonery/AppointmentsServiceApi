@@ -1,4 +1,9 @@
-﻿using AppointmentService.Domain.Models;
+﻿using System;
+using System.Collections.Generic;
+using System.Globalization;
+using System.Linq;
+using System.Threading.Tasks;
+using AppointmentService.Domain.Models;
 using AppointmentService.Domain.Repository;
 using AppointmentService.Domain.Services;
 using AppointmentService.Shared.Dto;
@@ -7,11 +12,6 @@ using AutoMapper;
 using MongoDB.Bson;
 using OperationResult;
 using Serilog;
-using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace AppointmentService.Application.Services
 {
@@ -27,7 +27,7 @@ namespace AppointmentService.Application.Services
         private readonly int _defaultMinutesForServiceExecution = 60;
 
         public BookService(
-        FactoryBookImp factoryBook, 
+        FactoryBookImp factoryBook,
         FactoryProfessionalServicesImp factoryProfessionalServices,
         FactoryProfessionalImp factoryProfessional,
         FactoryLogImp factoryLog,
@@ -105,7 +105,7 @@ namespace AppointmentService.Application.Services
 
             var servicesReferences = new List<Service>();
 
-            for(var index = 0; index < openBookRequest.ServiceIds.Count; index++)
+            for (var index = 0; index < openBookRequest.ServiceIds.Count; index++)
             {
                 var serviceResult = await _factoryProfessionalServices
                     .GetServiceById(openBookRequest.ServiceIds.ElementAt(index)).ConfigureAwait(false);
@@ -116,7 +116,7 @@ namespace AppointmentService.Application.Services
             }
 
             if (openBookRequest.ServiceIds.Count > 1)
-                serviceDurationInMinutes = openBookRequest.Duration;                
+                serviceDurationInMinutes = openBookRequest.Duration;
 
             for (int start = 0; start <= differenceInDates; start++)
             {
@@ -150,7 +150,7 @@ namespace AppointmentService.Application.Services
             DateTime start = startDate;
             DateTime end = startDate.Add(endHour);
 
-            start.Add(startHour);
+            //start.Add(startHour);
 
             while (end >= start)
             {
@@ -160,7 +160,8 @@ namespace AppointmentService.Application.Services
                     continue;
                 }
 
-                availableTimes.Add(new Time { 
+                availableTimes.Add(new Time
+                {
                     AvailableHour = start.ToString("HH:mm", CultureInfo.InvariantCulture),
                 });
                 start = start.AddMinutes(duration);

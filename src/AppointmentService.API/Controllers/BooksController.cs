@@ -1,8 +1,8 @@
-﻿using AppointmentService.Domain.Services;
+﻿using System.Threading.Tasks;
+using AppointmentService.Domain.Services;
 using AppointmentService.Shared.Dto;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.Threading.Tasks;
 
 namespace AppointmentService.API.Controllers
 {
@@ -13,7 +13,7 @@ namespace AppointmentService.API.Controllers
     {
         private readonly BookServiceImp _bookService;
 
-        public BooksController(BookServiceImp bookService) 
+        public BooksController(BookServiceImp bookService)
             => _bookService = bookService;
 
         [HttpGet]
@@ -45,7 +45,8 @@ namespace AppointmentService.API.Controllers
         [HttpPost]
         public async Task<IActionResult> CreateANewBook([FromBody] OpenBookRequestDto openBookRequest)
         {
-            var (isSuccess, result, exception) = await _bookService.MountANewBookWithLimitInDays(openBookRequest).ConfigureAwait(false);
+            var (isSuccess, result, exception) = await _bookService
+                .MountANewBookWithLimitInDays(openBookRequest).ConfigureAwait(false);
 
             if (!isSuccess)
                 return BadRequest();
